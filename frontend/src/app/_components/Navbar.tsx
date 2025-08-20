@@ -1,6 +1,6 @@
 "use client"
-import { Menu as MenuIcon, Close as CloseIcon, ExpandMore as ExpandMoreIcon } from '@mui/icons-material';
-import { AppBar, Button, IconButton, Toolbar, Typography, Drawer, List, ListItem, ListItemText, Collapse, Box } from '@mui/material';
+import { Menu as MenuIcon, Close as CloseIcon, ExpandMore as ExpandMoreIcon, ExpandLess as ExpandLessIcon } from '@mui/icons-material';
+import { AppBar, Button, IconButton, Toolbar, Typography, Drawer, List, ListItem, ListItemText, Collapse, Box, Menu, MenuItem } from '@mui/material';
 import React, { useState, useEffect } from 'react';
 import { useMediaQuery } from '@mui/material';
 import Link from 'next/link';
@@ -37,6 +37,10 @@ const Navbar: React.FC = () => {
     // Mobile menu state
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [dropdownOpen, setDropdownOpen] = useState<{ [key: string]: boolean }>({});
+    
+    // Desktop dropdown state
+    const [desktopAnchorEl, setDesktopAnchorEl] = useState<null | HTMLElement>(null);
+    const [desktopDropdownOpen, setDesktopDropdownOpen] = useState<string | null>(null);
 
     const toggleMobileMenu = () => {
         setMobileMenuOpen(!mobileMenuOpen);
@@ -49,6 +53,22 @@ const Navbar: React.FC = () => {
         }));
     };
 
+    // Desktop dropdown handlers
+    const handleDesktopDropdownClick = (event: React.MouseEvent<HTMLElement>, itemLabel: string) => {
+        if (desktopDropdownOpen === itemLabel) {
+            setDesktopAnchorEl(null);
+            setDesktopDropdownOpen(null);
+        } else {
+            setDesktopAnchorEl(event.currentTarget);
+            setDesktopDropdownOpen(itemLabel);
+        }
+    };
+
+    const handleDesktopDropdownClose = () => {
+        setDesktopAnchorEl(null);
+        setDesktopDropdownOpen(null);
+    };
+
     const handleNavItemClick = () => {
         setMobileMenuOpen(false);
         setDropdownOpen({});
@@ -59,6 +79,10 @@ const Navbar: React.FC = () => {
         if (isDesktop) {
             setMobileMenuOpen(false);
             setDropdownOpen({});
+        } else {
+            // Close desktop dropdown when switching to mobile
+            setDesktopAnchorEl(null);
+            setDesktopDropdownOpen(null);
         }
     }, [isDesktop]);
 
@@ -75,20 +99,67 @@ const Navbar: React.FC = () => {
                     {isDesktop && (
                         <div className='flex gap-4'>
                             {navItems.map(navItem => (
-                                <Button
-                                    key={navItem.label}
-                                    component={Link}
-                                    href={navItem.link}
-                                    sx={{
-                                        color: "white",
-                                        textTransform: 'inherit',
-                                        '&:hover': {
-                                            backgroundColor: 'rgba(255,255,255,0.1)'
-                                        }
-                                    }}
-                                >
-                                    {navItem.label}
-                                </Button>
+                                <div key={navItem.label}>
+                                    {navItem.dropdown ? (
+                                        <>
+                                            <Button
+                                                onClick={(e) => handleDesktopDropdownClick(e, navItem.label)}
+                                                sx={{
+                                                    color: "white",
+                                                    textTransform: 'inherit',
+                                                    '&:hover': {
+                                                        backgroundColor: 'rgba(255,255,255,0.1)'
+                                                    }
+                                                }}
+                                            >
+                                                {navItem.label}
+                                                {desktopDropdownOpen === navItem.label ? 
+                                                    <ExpandLessIcon sx={{ ml: 0.5 }} /> : 
+                                                    <ExpandMoreIcon sx={{ ml: 0.5 }} />
+                                                }
+                                            </Button>
+                                            <Menu
+                                                anchorEl={desktopAnchorEl}
+                                                open={desktopDropdownOpen === navItem.label}
+                                                onClose={handleDesktopDropdownClose}
+                                                PaperProps={{
+                                                    sx: {
+                                                        backgroundColor: "black",
+                                                        color: "white",
+                                                        '& .MuiMenuItem-root:hover': {
+                                                            backgroundColor: 'rgba(255,255,255,0.1)',
+                                                        },
+                                                    },
+                                                }}
+                                            >
+                                                {navItem.dropdown.map((subItem) => (
+                                                    <MenuItem key={subItem.label} onClick={handleDesktopDropdownClose}>
+                                                        <Link 
+                                                            href={subItem.link} 
+                                                            style={{ textDecoration: 'none', color: 'inherit', width: '100%' }}
+                                                        >
+                                                            {subItem.label}
+                                                        </Link>
+                                                    </MenuItem>
+                                                ))}
+                                            </Menu>
+                                        </>
+                                    ) : (
+                                        <Button
+                                            component={Link}
+                                            href={navItem.link}
+                                            sx={{
+                                                color: "white",
+                                                textTransform: 'inherit',
+                                                '&:hover': {
+                                                    backgroundColor: 'rgba(255,255,255,0.1)'
+                                                }
+                                            }}
+                                        >
+                                            {navItem.label}
+                                        </Button>
+                                    )}
+                                </div>
                             ))}
                         </div>
                     )}
