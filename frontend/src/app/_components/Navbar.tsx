@@ -25,20 +25,7 @@ import {
 } from '@mui/icons-material';
 import Link from 'next/link';
 import Logo from './Logo';
-
-// Constants
-const BREAKPOINTS = {
-    DESKTOP: '(min-width:1200px)',
-    TABLET: '(min-width:768px)',
-    SMALL: '(min-width:500px)',
-} as const;
-
-const COLORS = {
-    ACCENT: "rgb(204, 255, 0)",
-    BLACK: "black",
-    WHITE: "white",
-    HOVER: "rgba(255,255,255,0.1)",
-} as const;
+import { COLORS, BREAKPOINTS, buttonStyles, menuStyles } from '../styles/theme';
 
 // Navigation data
 const navItems = [
@@ -62,58 +49,6 @@ const navItems = [
     { label: "Learn", link: "/learn" },
     { label: "Support", link: "/support" },
 ];
-
-// Shared styles
-const buttonStyles = {
-    base: {
-        color: COLORS.WHITE,
-        textTransform: 'inherit' as const,
-        '&:hover': {
-            backgroundColor: COLORS.HOVER,
-        },
-    },
-    login: {
-        color: COLORS.ACCENT,
-        borderColor: COLORS.ACCENT,
-        backgroundColor: COLORS.BLACK,
-        border: "1px solid",
-        textTransform: 'inherit' as const,
-        mx: 1,
-        '&:hover': {
-            backgroundColor: COLORS.ACCENT,
-            color: COLORS.BLACK,
-        },
-    },
-    signup: {
-        color: COLORS.BLACK,
-        backgroundColor: COLORS.ACCENT,
-        border: `1px solid ${COLORS.ACCENT}`,
-        textTransform: 'inherit' as const,
-        mx: 1,
-        '&:hover': {
-            backgroundColor: COLORS.BLACK,
-            borderColor: COLORS.ACCENT,
-            color: COLORS.ACCENT,
-        },
-    },
-};
-
-const menuStyles = {
-    paper: {
-        backgroundColor: COLORS.BLACK,
-        color: COLORS.WHITE,
-        '& .MuiMenuItem-root:hover': {
-            backgroundColor: COLORS.HOVER,
-        },
-    },
-    drawer: {
-        backgroundColor: COLORS.BLACK,
-        color: COLORS.WHITE,
-        width: "100vw",
-        height: "100vh",
-        top: "64px",
-    },
-};
 
 // Types
 interface NavItem {
