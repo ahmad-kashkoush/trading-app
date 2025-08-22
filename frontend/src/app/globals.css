@@ -56,3 +56,22 @@ body {
     transform: translateX(5rem);
   }
 }
+
+/* Firefox-specific compatibility fixes */
+@-moz-document url-prefix() {
+  /* Basic grid gap fallback */
+  .grid {
+    gap: 1.5rem !important;
+  }
+}
+
+/* CSS Grid gap fallback for older browsers */
+@supports not (gap: 1rem) {
+  .grid > * {
+    margin: 0.75rem;
+  }
+  
+  .grid {
+    margin: -0.75rem;
+  }
+}
