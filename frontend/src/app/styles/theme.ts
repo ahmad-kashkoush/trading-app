@@ -2,6 +2,8 @@
 
 export const COLORS = {
     ACCENT: "rgb(204, 255, 0)",
+    ACCENT_HEX: "#ccff00", // For Tailwind classes
+    ACCENT_HOVER: "#b8e600", // Hover variant
     BLACK: "black",
     WHITE: "white",
     HOVER: "rgba(255,255,255,0.1)",

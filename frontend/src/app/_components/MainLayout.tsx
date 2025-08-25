@@ -3,7 +3,11 @@ import React from 'react';
 import { motion, Variants } from 'framer-motion';
 import ThemeButton from './ThemeButton';
 import ImageComponent from './ImageComponent';
+import SectionHeader from './SectionHeader';
 import Link from 'next/link';
+import { animationVariants, VIEWPORT_CONFIG, HOVER_ANIMATIONS } from '../constants/animations';
+import { typography, spacing, buttonClasses, gridPatterns, cardStyles, decorative } from '../constants/styles';
+import { COLORS } from '../styles/theme';
 
 // Reusable Section Component Interface
 interface SectionLayoutProps {
@@ -32,17 +36,6 @@ const SectionLayout: React.FC<SectionLayoutProps> = ({
     imageSize = 'cover',
     overlay = false
 }) => {
-    const containerVariants: Variants = {
-        hidden: { opacity: 0 },
-        visible: {
-            opacity: 1,
-            transition: {
-                duration: 0.6,
-                staggerChildren: 0.2,
-            },
-        },
-    };
-
     const getBackgroundClasses = () => {
         switch (backgroundVariant) {
             case 'alternate':
@@ -90,10 +83,10 @@ const SectionLayout: React.FC<SectionLayoutProps> = ({
     return (
         <motion.section
             id={id}
-            variants={containerVariants}
+            variants={animationVariants.container}
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, amount: 0.3 }}
+            viewport={VIEWPORT_CONFIG}
             className={`relative min-h-screen ${getBackgroundClasses()} overflow-hidden ${className}`}
             style={backgroundImage && imagePosition === 'background' ? {
                 backgroundImage: `url(${backgroundImage})`,
@@ -107,8 +100,8 @@ const SectionLayout: React.FC<SectionLayoutProps> = ({
                 <div className="absolute inset-0 bg-black/80 z-0" />
             )}
 
-            <div className={`container mx-auto px-4 py-8 lg:py-16 flex flex-col justify-center min-h-screen relative z-10 ${getContentAlignment()}`}>
-                <div className={`max-w-6xl w-full space-y-6 lg:space-y-8 ${getLayoutClasses()}`}>
+            <div className={`${spacing.container} flex flex-col justify-center min-h-screen relative z-10 ${getContentAlignment()}`}>
+                <div className={`${spacing.maxWidth.content} ${spacing.section} ${getLayoutClasses()}`}>
                     {/* Image Section (when positioned left/right/center) */}
                     {backgroundImage && imagePosition !== 'background' && (
                         <motion.div
@@ -126,7 +119,7 @@ const SectionLayout: React.FC<SectionLayoutProps> = ({
                     )}
 
                     {/* Content Section */}
-                    <div className={`${imagePosition === 'left' || imagePosition === 'right' ? 'flex-1' : 'w-full'} space-y-6 lg:space-y-8`}>
+                    <div className={`${imagePosition === 'left' || imagePosition === 'right' ? 'flex-1' : 'w-full'} ${spacing.section}`}>
                         {children}
                     </div>
                 </div>
@@ -169,30 +162,6 @@ export default MainLayout;
 
 // Section 1: HOOD Month Promotion
 function SectionLayout1() {
-    const itemVariants: Variants = {
-        hidden: { y: 50, opacity: 0 },
-        visible: {
-            y: 0,
-            opacity: 1,
-            transition: {
-                duration: 0.8,
-                ease: [0.25, 0.1, 0.25, 1],
-            },
-        },
-    };
-
-    const accentVariants: Variants = {
-        hidden: { scale: 0.8, opacity: 0 },
-        visible: {
-            scale: 1,
-            opacity: 1,
-            transition: {
-                duration: 1,
-                ease: [0.25, 0.1, 0.25, 1],
-            },
-        },
-    };
-
     return (
         <SectionLayout
             id="hood-month"
@@ -203,48 +172,48 @@ function SectionLayout1() {
             overlay={true}
         >
             {/* Event Badge */}
-            <motion.div variants={accentVariants} className="relative">
+            <motion.div variants={animationVariants.scale} className="relative">
                 <div className="relative flex items-center justify-center">
                     {/* Decorative Lines */}
-                    <div className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-16 md:-translate-x-20 w-10 md:w-16 h-px bg-[#ccff00]" />
-                    <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-16 md:translate-x-20 w-10 md:w-16 h-px bg-[#ccff00]" />
+                    <div className={`absolute left-0 top-1/2 -translate-y-1/2 -translate-x-16 md:-translate-x-20 ${decorative.lineHorizontal}`} />
+                    <div className={`absolute right-0 top-1/2 -translate-y-1/2 translate-x-16 md:translate-x-20 ${decorative.lineHorizontal}`} />
 
-                    <h2 className="font-['Phonic'] text-sm sm:text-lg md:text-xl lg:text-2xl font-semibold text-[#ccff00] tracking-[2px] uppercase">
+                    <h2 className={`${typography.phonic} ${typography.accent.small} ${typography.colors.accent}`}>
                         HOOD MONTH + AUG 19-SEPT 15, 2025
                     </h2>
                 </div>
             </motion.div>
 
             {/* Main Heading */}
-            <motion.div variants={itemVariants}>
-                <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-normal tracking-tight leading-tight text-white bg-gradient-to-br from-white via-gray-100 to-[#ccff00] bg-clip-text text-transparent mb-4">
+            <motion.div variants={animationVariants.slideUp}>
+                <h1 className={`${typography.serif} ${typography.heading.hero} ${typography.colors.white} bg-gradient-to-br from-white via-gray-100 to-[${COLORS.ACCENT_HEX}] bg-clip-text text-transparent mb-4`}>
                     Money moves, rewards follow
                 </h1>
             </motion.div>
 
             {/* Description */}
-            <motion.div variants={itemVariants} className="space-y-4">
-                <p className="font-['Phonic'] text-sm sm:text-base md:text-lg font-normal tracking-tight leading-relaxed text-white max-w-2xl mx-auto">
+            <motion.div variants={animationVariants.slideUp} className="space-y-4">
+                <p className={`${typography.phonic} ${typography.body.large} font-normal tracking-tight ${typography.colors.white} ${spacing.maxWidth.small}`}>
                     HOOD Month is here. Deposit and transfer your way to bonuses and a shot at a solid gold bar.
                 </p>
 
-                <p className="font-['Phonic'] text-xs sm:text-sm font-light text-white/50 max-w-xl mx-auto leading-relaxed">
+                <p className={`${typography.phonic} ${typography.body.small} font-light ${typography.colors.whiteFaded} ${spacing.maxWidth.xsmall}`}>
                     No deposit or Gold membership necessary to enter via mail. Terms apply. Subscription may apply.
                 </p>
             </motion.div>
 
             {/* CTA Button */}
             <motion.div
-                variants={itemVariants}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="mt-8"
+                variants={animationVariants.slideUp}
+                whileHover={HOVER_ANIMATIONS.scale}
+                whileTap={HOVER_ANIMATIONS.tap}
+                className={spacing.margins.top.small}
             >
                 <ThemeButton
                     component={Link}
                     href='/hood-month'
                     variant="primary"
-                    className="px-8 py-3 text-sm sm:text-base font-semibold rounded-full min-w-[200px] relative overflow-hidden group transition-all duration-300 hover:shadow-lg hover:shadow-[#ccff00]/20"
+                    className={`${buttonClasses.base} ${buttonClasses.sizes.large} relative overflow-hidden group ${buttonClasses.effects.shadow}`}
                 >
                     <span className="relative z-10">Explore HOOD Month</span>
                     {/* Shimmer Effect */}
@@ -257,18 +226,6 @@ function SectionLayout1() {
 
 // Section 2: Trading Features
 function SectionLayout2() {
-    const itemVariants: Variants = {
-        hidden: { y: 50, opacity: 0 },
-        visible: {
-            y: 0,
-            opacity: 1,
-            transition: {
-                duration: 0.8,
-                ease: [0.25, 0.1, 0.25, 1],
-            },
-        },
-    };
-
     return (
         <SectionLayout
             id="trading-features"
@@ -286,28 +243,28 @@ function SectionLayout2() {
                 {/* Right column with content */}
                 <div className="flex-1">
                     {/* Section Header */}
-                    <motion.div variants={itemVariants} className="space-y-6 text-left">
+                    <motion.div variants={animationVariants.slideUp} className={`${spacing.section} text-left`}>
                         {/* Accent Color Heading */}
-                        <h3 className="font-['Phonic'] text-sm sm:text-base md:text-lg font-semibold text-[#ccff00] tracking-[2px] uppercase">
+                        <h3 className={`${typography.phonic} ${typography.accent.small} ${typography.colors.accent}`}>
                             PROFESSIONAL TRADING
                         </h3>
 
                         {/* White Heading */}
-                        <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-normal tracking-tight text-white">
+                        <h2 className={`${typography.serif} ${typography.heading.large} ${typography.colors.white}`}>
                             Trade with Confidence
                         </h2>
 
                         {/* Paragraph */}
-                        <p className="font-['Phonic'] text-base sm:text-lg text-gray-300 leading-relaxed">
+                        <p className={`${typography.phonic} ${typography.body.large} ${typography.colors.gray}`}>
                             Experience next-generation trading with our cutting-edge platform designed for modern investors. Access real-time market data, advanced analytics, and commission-free trading all in one place.
                         </p>
                     </motion.div>
 
                     {/* CTA */}
-                    <motion.div variants={itemVariants} className="mt-12 text-left">
+                    <motion.div variants={animationVariants.slideUp} className={`${spacing.margins.top.medium} text-left`}>
                         <ThemeButton
                             variant="secondary"
-                            className="px-8 py-3 text-sm sm:text-base font-semibold rounded-full border border-[#ccff00] text-[#ccff00] hover:bg-[#ccff00] hover:text-black transition-all duration-300"
+                            className={`${buttonClasses.base} ${buttonClasses.secondary}`}
                         >
                             Start Trading Today
                         </ThemeButton>
@@ -320,32 +277,8 @@ function SectionLayout2() {
 
 // Section 3: Investment Opportunities
 function SectionLayout3() {
-    const itemVariants: Variants = {
-        hidden: { y: 50, opacity: 0 },
-        visible: {
-            y: 0,
-            opacity: 1,
-            transition: {
-                duration: 0.8,
-                ease: [0.25, 0.1, 0.25, 1],
-            },
-        },
-    };
-
-    const statsVariants: Variants = {
-        hidden: { scale: 0.8, opacity: 0 },
-        visible: {
-            scale: 1,
-            opacity: 1,
-            transition: {
-                duration: 0.8,
-                ease: [0.25, 0.1, 0.25, 1],
-            },
-        },
-    };
-
     const stats = [
-        { label: "Active Users", value: "30M+", color: "text-[#ccff00]" },
+        { label: "Active Users", value: "30M+", color: `text-[${COLORS.ACCENT_HEX}]` },
         { label: "Assets Under Management", value: "$100B+", color: "text-blue-400" },
         { label: "Daily Trades", value: "1M+", color: "text-green-400" },
         { label: "Countries Served", value: "190+", color: "text-purple-400" }
@@ -358,35 +291,28 @@ function SectionLayout3() {
             contentAlignment="center"
         >
             {/* Section Header */}
-            <motion.div variants={itemVariants} className="space-y-6">
-                <div className="relative">
-                    <div className="absolute left-1/2 top-0 -translate-x-1/2 -translate-y-2 w-12 h-px bg-gradient-to-r from-transparent via-[#ccff00] to-transparent" />
-                    <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-normal tracking-tight text-white">
-                        Build Your Financial Future
-                    </h2>
-                </div>
-                <p className="font-['Phonic'] text-base sm:text-lg text-gray-300 max-w-3xl mx-auto leading-relaxed">
-                    Join millions of investors who trust our platform to grow their wealth.
-                    From beginner-friendly tools to advanced investment strategies.
-                </p>
-            </motion.div>
+            <SectionHeader
+                title="Build Your Financial Future"
+                description="Join millions of investors who trust our platform to grow their wealth. From beginner-friendly tools to advanced investment strategies."
+                showLine={true}
+            />
 
             {/* Stats Grid */}
             <motion.div
-                variants={itemVariants}
-                className="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 mt-12"
+                variants={animationVariants.slideUp}
+                className={`${gridPatterns.stats} ${spacing.margins.top.medium}`}
             >
                 {stats.map((stat, index) => (
                     <motion.div
                         key={index}
-                        variants={statsVariants}
-                        whileHover={{ scale: 1.05 }}
+                        variants={animationVariants.stats}
+                        whileHover={HOVER_ANIMATIONS.scale}
                         className="text-center space-y-2"
                     >
                         <div className={`text-2xl sm:text-3xl lg:text-4xl font-bold ${stat.color}`}>
                             {stat.value}
                         </div>
-                        <div className="font-['Phonic'] text-xs sm:text-sm text-gray-400 uppercase tracking-wider">
+                        <div className={`${typography.phonic} ${typography.body.small} ${typography.colors.grayLight} uppercase tracking-wider`}>
                             {stat.label}
                         </div>
                     </motion.div>
@@ -394,23 +320,23 @@ function SectionLayout3() {
             </motion.div>
 
             {/* Final CTA */}
-            <motion.div variants={itemVariants} className="mt-12 space-y-6">
+            <motion.div variants={animationVariants.slideUp} className={`${spacing.margins.top.medium} space-y-6`}>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
                     <ThemeButton
                         variant="primary"
-                        className="px-8 py-3 text-sm sm:text-base font-semibold rounded-full min-w-[180px] bg-[#ccff00] text-black hover:bg-[#b8e600] transition-all duration-300"
+                        className={`${buttonClasses.base} ${buttonClasses.sizes.medium} ${buttonClasses.primary}`}
                     >
                         Get Started Free
                     </ThemeButton>
                     <ThemeButton
                         variant="secondary"
-                        className="px-8 py-3 text-sm sm:text-base font-semibold rounded-full min-w-[180px] border border-white/30 text-white hover:bg-white/10 transition-all duration-300"
+                        className={`${buttonClasses.base} ${buttonClasses.sizes.medium} ${buttonClasses.white}`}
                     >
                         Learn More
                     </ThemeButton>
                 </div>
 
-                <p className="font-['Phonic'] text-xs text-gray-500 max-w-md mx-auto">
+                <p className={`${typography.phonic} ${typography.body.small} ${typography.colors.grayLight} ${spacing.maxWidth.medium}`}>
                     * Investment products are not FDIC insured and may lose value.
                     Past performance does not guarantee future results.
                 </p>
@@ -421,31 +347,6 @@ function SectionLayout3() {
 
 // Section 4: About Us with Modern Team Design
 function SectionLayout4() {
-    const itemVariants: Variants = {
-        hidden: { y: 50, opacity: 0 },
-        visible: {
-            y: 0,
-            opacity: 1,
-            transition: {
-                duration: 0.8,
-                ease: [0.25, 0.1, 0.25, 1],
-            },
-        },
-    };
-
-    const cardVariants: Variants = {
-        hidden: { y: 30, opacity: 0, scale: 0.9 },
-        visible: {
-            y: 0,
-            opacity: 1,
-            scale: 1,
-            transition: {
-                duration: 0.6,
-                ease: [0.25, 0.1, 0.25, 1],
-            },
-        },
-    };
-
     const teamMembers = [
         {
             name: "Sarah Johnson",
@@ -487,32 +388,24 @@ function SectionLayout4() {
             showDecorations={true}
         >
             {/* Section Header */}
-            <motion.div variants={itemVariants} className="space-y-6 mb-16">
-                <div className="relative">
-                    <h3 className="font-['Phonic'] text-sm sm:text-base md:text-lg font-semibold text-[#ccff00] tracking-[2px] uppercase mb-4">
-                        OUR LEADERSHIP
-                    </h3>
-                    <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-normal tracking-tight text-white">
-                        Meet Our Team
-                    </h2>
-                </div>
-                <p className="font-['Phonic'] text-base sm:text-lg text-gray-300 max-w-3xl mx-auto leading-relaxed">
-                    Our experienced team combines decades of financial expertise with cutting-edge technology
-                    to deliver the best trading experience for our users.
-                </p>
-            </motion.div>
+            <SectionHeader
+                accent="OUR LEADERSHIP"
+                title="Meet Our Team"
+                description="Our experienced team combines decades of financial expertise with cutting-edge technology to deliver the best trading experience for our users."
+                className={spacing.margins.bottom.large}
+            />
 
             {/* Team Grid */}
             <motion.div
-                variants={itemVariants}
-                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-12"
+                variants={animationVariants.slideUp}
+                className={`${gridPatterns.team} ${spacing.margins.top.medium}`}
             >
                 {teamMembers.map((member, index) => (
                     <motion.div
                         key={index}
-                        variants={cardVariants}
-                        whileHover={{ y: -8, scale: 1.02 }}
-                        className="group relative bg-gradient-to-br from-white/10 to-white/5 border border-white/20 rounded-3xl p-6 lg:p-8 hover:border-[#ccff00]/30 transition-all duration-500"
+                        variants={animationVariants.card}
+                        whileHover={HOVER_ANIMATIONS.lift}
+                        className={`group ${cardStyles.base} ${cardStyles.hover} ${cardStyles.padding}`}
                     >
                         {/* Background Glow Effect */}
                         <div className={`absolute inset-0 bg-gradient-to-br opacity-0 group-hover:opacity-10 rounded-3xl transition-opacity duration-500 ${member.gradient}`} />
@@ -522,56 +415,56 @@ function SectionLayout4() {
                             <div className={`w-16 h-16 lg:w-20 lg:h-20 mx-auto rounded-2xl bg-gradient-to-br ${member.gradient} flex items-center justify-center text-white font-bold text-lg lg:text-xl shadow-lg`}>
                                 {member.initials}
                             </div>
-                            {/* Decorative Ring - removed blur */}
+                            {/* Decorative Ring */}
                             <div className={`absolute inset-0 w-16 h-16 lg:w-20 lg:h-20 mx-auto rounded-2xl bg-gradient-to-br ${member.gradient} opacity-20 group-hover:opacity-30 transition-opacity duration-500`} />
                         </div>
 
                         {/* Content */}
                         <div className="relative z-10 text-center space-y-3">
-                            <h3 className="font-['Phonic'] text-lg lg:text-xl font-semibold text-white group-hover:text-[#ccff00] transition-colors duration-300">
+                            <h3 className={`${typography.phonic} ${typography.heading.small} ${typography.colors.white} group-hover:${typography.colors.accent} transition-colors duration-300`}>
                                 {member.name}
                             </h3>
-                            <p className="font-['Phonic'] text-sm text-[#ccff00] font-medium">
+                            <p className={`${typography.phonic} text-sm ${typography.colors.accent} font-medium`}>
                                 {member.role}
                             </p>
-                            <p className="font-['Phonic'] text-xs lg:text-sm text-gray-400 leading-relaxed opacity-80 group-hover:opacity-100 transition-opacity duration-300">
+                            <p className={`${typography.phonic} ${typography.body.medium} ${typography.colors.grayLight} opacity-80 group-hover:opacity-100 transition-opacity duration-300`}>
                                 {member.bio}
                             </p>
                         </div>
 
                         {/* Hover Border Effect */}
-                        <div className="absolute inset-0 rounded-3xl bg-gradient-to-r from-[#ccff00]/20 via-transparent to-[#ccff00]/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+                        <div className={decorative.glow} />
                     </motion.div>
                 ))}
             </motion.div>
 
             {/* Mission Statement */}
-            <motion.div variants={itemVariants} className="mt-20 space-y-8">
-                <div className="relative bg-gradient-to-br from-white/5 to-white/[0.02] border border-white/10 rounded-3xl p-8 lg:p-12 overflow-hidden">
+            <motion.div variants={animationVariants.slideUp} className={`${spacing.margins.top.xlarge} space-y-8`}>
+                <div className={`relative ${cardStyles.base} ${cardStyles.paddingLarge} overflow-hidden`}>
                     {/* Background Pattern */}
                     <div className="absolute inset-0 opacity-5">
-                        <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-[#ccff00]/20 to-transparent" />
-                        <div className="absolute bottom-0 right-0 w-32 h-32 bg-[#ccff00]/10 rounded-full" />
+                        <div className={`absolute top-0 left-0 w-full h-full bg-gradient-to-br from-[${COLORS.ACCENT_HEX}]/20 to-transparent`} />
+                        <div className={`absolute bottom-0 right-0 w-32 h-32 bg-[${COLORS.ACCENT_HEX}]/10 rounded-full`} />
                     </div>
 
-                    <div className="relative z-10 text-center max-w-4xl mx-auto">
-                        <h3 className="font-serif text-2xl lg:text-3xl font-normal text-white mb-6">
+                    <div className={`relative z-10 text-center ${spacing.maxWidth.medium}`}>
+                        <h3 className={`${typography.serif} ${typography.heading.medium} ${typography.colors.white} mb-6`}>
                             Our Mission
                         </h3>
-                        <blockquote className="font-['Phonic'] text-base lg:text-lg text-gray-300 leading-relaxed italic">
+                        <blockquote className={`${typography.phonic} ${typography.body.large} ${typography.colors.gray} italic`}>
                             &ldquo;To democratize finance for all by providing accessible, secure, and innovative
                             trading tools that empower individuals to take control of their financial future.&rdquo;
                         </blockquote>
-                        <div className="mt-6 w-16 h-px bg-gradient-to-r from-transparent via-[#ccff00] to-transparent mx-auto" />
+                        <div className={`mt-6 w-16 h-px bg-gradient-to-r from-transparent via-[${COLORS.ACCENT_HEX}] to-transparent mx-auto`} />
                     </div>
                 </div>
             </motion.div>
 
             {/* Contact CTA */}
-            <motion.div variants={itemVariants} className="mt-12">
+            <motion.div variants={animationVariants.slideUp} className={spacing.margins.top.medium}>
                 <ThemeButton
                     variant="primary"
-                    className="px-8 py-3 text-sm sm:text-base font-semibold rounded-full bg-[#ccff00] text-black hover:bg-[#b8e600] transition-all duration-300 shadow-lg hover:shadow-[#ccff00]/25"
+                    className={`${buttonClasses.base} ${buttonClasses.primary} ${buttonClasses.effects.shadowStrong}`}
                 >
                     Get in Touch
                 </ThemeButton>
@@ -582,30 +475,6 @@ function SectionLayout4() {
 
 // Section 5: Robinhood Protection Guarantee
 function SectionLayout5() {
-    const itemVariants: Variants = {
-        hidden: { y: 50, opacity: 0 },
-        visible: {
-            y: 0,
-            opacity: 1,
-            transition: {
-                duration: 0.8,
-                ease: [0.25, 0.1, 0.25, 1],
-            },
-        },
-    };
-
-    const featureVariants: Variants = {
-        hidden: { y: 30, opacity: 0 },
-        visible: {
-            y: 0,
-            opacity: 1,
-            transition: {
-                duration: 0.6,
-                ease: [0.25, 0.1, 0.25, 1],
-            },
-        },
-    };
-
     const features = [
         {
             icon: "/illo_secure.svg",
@@ -631,31 +500,22 @@ function SectionLayout5() {
 
     return (
         <motion.section
-            variants={{
-                hidden: { opacity: 0 },
-                visible: {
-                    opacity: 1,
-                    transition: {
-                        duration: 0.6,
-                        staggerChildren: 0.2,
-                    },
-                },
-            }}
+            variants={animationVariants.container}
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, amount: 0.3 }}
+            viewport={VIEWPORT_CONFIG}
             className="relative min-h-screen overflow-hidden"
             style={{ backgroundColor: '#1c180d' }}
         >
-            <div className="container mx-auto px-4 py-8 lg:py-16 flex flex-col justify-center min-h-screen relative z-10 items-center text-center">
-                <div className="max-w-6xl w-full space-y-12">
+            <div className={`${spacing.container} flex flex-col justify-center min-h-screen relative z-10 items-center text-center`}>
+                <div className={`${spacing.maxWidth.content} ${spacing.sectionLarge}`}>
                     {/* Section Header */}
-                    <motion.div variants={itemVariants} className="space-y-6">
-                        <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-normal tracking-tight text-white"
+                    <motion.div variants={animationVariants.slideUp} className={spacing.section}>
+                        <h2 className={`${typography.serif} ${typography.heading.large} ${typography.colors.white}`}
                             style={{ fontFamily: 'serif, Georgia, "Times New Roman", Times, serif' }}>
                             Robinhood Protection Guarantee
                         </h2>
-                        <p className="text-base sm:text-lg text-white/80 max-w-3xl mx-auto leading-relaxed"
+                        <p className={`${typography.body.large} ${typography.colors.whiteOpacity} ${spacing.maxWidth.text}`}
                            style={{ fontFamily: 'Phonic, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif' }}>
                             Your security is our priority. We employ multiple layers of protection to safeguard your investments and personal information.
                         </p>
@@ -663,14 +523,14 @@ function SectionLayout5() {
 
                     {/* Features Grid - 2 columns, 4 features - Firefox Compatible */}
                     <motion.div 
-                        variants={itemVariants}
-                        className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 mt-16"
+                        variants={animationVariants.slideUp}
+                        className={`${gridPatterns.features} ${spacing.margins.top.large}`}
                     >
                         {features.map((feature, index) => (
                             <motion.div
                                 key={index}
-                                variants={featureVariants}
-                                whileHover={{ y: -5, scale: 1.02 }}
+                                variants={animationVariants.feature}
+                                whileHover={HOVER_ANIMATIONS.liftSmall}
                                 className="group flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left space-y-4 sm:space-y-0 sm:space-x-6 p-6 rounded-2xl hover:bg-white/5 transition-all duration-300"
                             >
                                 {/* Icon */}
@@ -686,10 +546,10 @@ function SectionLayout5() {
 
                                 {/* Content */}
                                 <div className="flex-1 space-y-3">
-                                    <h3 className="font-['Phonic'] text-lg lg:text-xl font-semibold text-white group-hover:text-[#ccff00] transition-colors duration-300">
+                                    <h3 className={`${typography.phonic} ${typography.heading.small} ${typography.colors.white} group-hover:${typography.colors.accent} transition-colors duration-300`}>
                                         {feature.title}
                                     </h3>
-                                    <p className="font-['Phonic'] text-sm lg:text-base text-white/70 leading-relaxed group-hover:text-white/90 transition-colors duration-300">
+                                    <p className={`${typography.phonic} ${typography.body.medium} text-white/70 group-hover:text-white/90 transition-colors duration-300`}>
                                         {feature.description}
                                     </p>
                                 </div>
@@ -698,13 +558,13 @@ function SectionLayout5() {
                     </motion.div>
 
                     {/* Additional Info */}
-                    <motion.div variants={itemVariants} className="mt-16">
-                        <div className="bg-white/5 border border-white/10 rounded-2xl p-6 lg:p-8 max-w-4xl mx-auto">
-                            <p className="font-['Phonic'] text-sm lg:text-base text-white/60 leading-relaxed">
-                                <strong className="text-white">Important:</strong> Robinhood Financial LLC is a member of SIPC, which protects securities customers 
+                    <motion.div variants={animationVariants.slideUp} className={spacing.margins.top.large}>
+                        <div className={`${cardStyles.base} ${cardStyles.paddingLarge} ${spacing.maxWidth.medium}`}>
+                            <p className={`${typography.phonic} ${typography.body.medium} ${typography.colors.whiteOpacityLow}`}>
+                                <strong className={typography.colors.white}>Important:</strong> Robinhood Financial LLC is a member of SIPC, which protects securities customers 
                                 of its members up to $500,000 (including $250,000 for claims for cash). 
                                 An explanatory brochure is available upon request or at{' '}
-                                <span className="text-[#ccff00]">www.sipc.org</span>.
+                                <span className={typography.colors.accent}>www.sipc.org</span>.
                             </p>
                         </div>
                     </motion.div>
