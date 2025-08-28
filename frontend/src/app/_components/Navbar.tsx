@@ -222,7 +222,10 @@ const Navbar: React.FC = () => {
             <AppBar sx={{ backgroundColor: COLORS.BLACK, color: COLORS.WHITE, boxShadow: "none", position: "sticky" }}>
                 <Toolbar className='flex justify-between gap-8'>
                     {/* Logo */}
-                    <Typography variant="h6" sx={{ color: COLORS.WHITE }}>
+                    <Typography
+                    component={Link}
+                    href={"/"}
+                    variant="h6" sx={{ color: COLORS.WHITE }}>
                         <Logo />
                     </Typography>
 
