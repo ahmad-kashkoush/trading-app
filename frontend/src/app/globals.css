@@ -3,6 +3,9 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --accent-color: #ccff00;
+  --accent-hover: #b8e600;
+  --gold-color: #bfaa70;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -10,6 +13,12 @@
     --background: #0a0a0a;
     --foreground: #ededed;
   }
+}
+
+/* Gold theme variant */
+.theme-gold {
+  --accent-color: #bfaa70;
+  --accent-hover: #a89660;
 }
 
 body {

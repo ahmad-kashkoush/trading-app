@@ -12,7 +12,7 @@ export const typography = {
   // Accent text styles
   accent: {
     small: "text-sm sm:text-base md:text-lg font-semibold tracking-[2px] uppercase",
-    color: `text-[${COLORS.ACCENT_HEX}]`,
+    color: "text-[var(--accent-color)]",
   },
   
   // Main heading responsive sizes
@@ -33,12 +33,14 @@ export const typography = {
   // Text colors
   colors: {
     white: "text-white",
-    accent: `text-[${COLORS.ACCENT_HEX}]`,
+    accent: "text-[var(--accent-color)]",
     gray: "text-gray-300",
     grayLight: "text-gray-400",
     whiteOpacity: "text-white/80",
     whiteOpacityLow: "text-white/60",
     whiteFaded: "text-white/50",
+    gold: `text-[${COLORS.GOLD_HEX}]`,
+    goldFaded: `text-[#dad3c0]`
   },
 };
 
@@ -73,8 +75,8 @@ export const spacing = {
 // Button styling patterns
 export const buttonClasses = {
   base: "px-8 py-3 text-sm sm:text-base font-semibold rounded-full transition-all duration-300",
-  primary: `bg-[${COLORS.ACCENT_HEX}] text-black hover:bg-[${COLORS.ACCENT_HOVER}]`,
-  secondary: `border border-[${COLORS.ACCENT_HEX}] text-[${COLORS.ACCENT_HEX}] hover:bg-[${COLORS.ACCENT_HEX}] hover:text-black`,
+  primary: "bg-[var(--accent-color)] text-black hover:bg-[var(--accent-hover)]",
+  secondary: "border border-[var(--accent-color)] text-[var(--accent-color)] hover:bg-[var(--accent-color)] hover:text-black",
   white: "border border-white/30 text-white hover:bg-white/10",
   sizes: {
     small: "min-w-[140px]",
@@ -82,8 +84,8 @@ export const buttonClasses = {
     large: "min-w-[200px]",
   },
   effects: {
-    shadow: `hover:shadow-lg hover:shadow-[${COLORS.ACCENT_HEX}]/20`,
-    shadowStrong: `shadow-lg hover:shadow-[${COLORS.ACCENT_HEX}]/25`,
+    shadow: "hover:shadow-lg hover:shadow-[var(--accent-color)]/20",
+    shadowStrong: "shadow-lg hover:shadow-[var(--accent-color)]/25",
   },
 };
 
@@ -98,14 +100,14 @@ export const gridPatterns = {
 // Card styling
 export const cardStyles = {
   base: "relative bg-gradient-to-br from-white/10 to-white/5 border border-white/20 rounded-3xl transition-all duration-500",
-  hover: `hover:border-[${COLORS.ACCENT_HEX}]/30`,
+  hover: "hover:border-[var(--accent-color)]/30",
   padding: "p-6 lg:p-8",
   paddingLarge: "p-8 lg:p-12",
 };
 
 // Decorative elements
 export const decorative = {
-  line: `w-12 h-px bg-gradient-to-r from-transparent via-[${COLORS.ACCENT_HEX}] to-transparent`,
-  lineHorizontal: `w-10 md:w-16 h-px bg-[${COLORS.ACCENT_HEX}]`,
-  glow: `absolute inset-0 rounded-3xl bg-gradient-to-r from-[${COLORS.ACCENT_HEX}]/20 via-transparent to-[${COLORS.ACCENT_HEX}]/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none`,
+  line: "w-12 h-px bg-gradient-to-r from-transparent via-[var(--accent-color)] to-transparent",
+  lineHorizontal: "w-10 md:w-16 h-px bg-[var(--accent-color)]",
+  glow: "absolute inset-0 rounded-3xl bg-gradient-to-r from-[var(--accent-color)]/20 via-transparent to-[var(--accent-color)]/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none",
 };

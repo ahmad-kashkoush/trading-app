@@ -16,31 +16,30 @@ import SectionHeader from '../_components/SectionHeader';
 import TabsComponent from './_components/TabsComponent';
 import AccordionComponent from './_components/AccordionComponent';
 import { Typography } from '@mui/material';
+import Popup from '../_components/Popup';
 
 
 
 export default function Strategies() {
-    const [isModalOpen, setIsModalOpen] = useState(false);
 
     return (
         <main>
-            <SectionLayout1 isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />
-            
+            <SectionLayout1 />
+
             {/* Vertical Dashed Line Divider */}
             <div className="bg-black flex justify-center py-8">
                 <div className="w-px h-[8rem] border-l-2 border-dashed border-white border-opacity-30"></div>
             </div>
-            
+
             <SectionLayout2 />
             <SectionLayout3 />
-            <Popup isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />
         </main>
     );
 }
 
-// SectionLayout1 Component
-// todo: CTA: Get started button
-function SectionLayout1({ isModalOpen, setIsModalOpen }: { isModalOpen: boolean; setIsModalOpen: (value: boolean) => void }): JSX.Element {
+function SectionLayout1(): JSX.Element {
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
     return (
         <SectionLayout
             backgroundVariant="none"
@@ -99,6 +98,8 @@ function SectionLayout1({ isModalOpen, setIsModalOpen }: { isModalOpen: boolean;
             >
                 Get Started
             </ThemeButton>
+            <Popup isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} title="About future projections" description="Future projection uses Monte Carlo simulations to project a range of hypothetical market return scenarios, based on a historical performance analysis of asset class returns. Future projection is a feature available to Robinhood Strategies clients for informational purposes and is not intended to be a recommendation to invest in any security, or engage in any investment strategy. Past performance is not indicative of future results. All investing involves risk and loss of principal is possible." />
+
         </SectionLayout>
     );
 };
@@ -135,8 +136,8 @@ function SectionLayout3(): JSX.Element {
                     Frequently Asked Questions
                 </h2>
             </motion.div>
-            
-            <motion.div 
+
+            <motion.div
                 variants={animationVariants.slideUp}
                 className="w-full"
             >
@@ -145,45 +146,3 @@ function SectionLayout3(): JSX.Element {
         </SectionLayout>
     );
 }
-
-// Popup Component
-function Popup({ isModalOpen, setIsModalOpen }: { isModalOpen: boolean, setIsModalOpen: (value: boolean) => void }): JSX.Element {
-    return (
-        <AnimatePresence>
-            {isModalOpen && (
-                <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    onClick={() => setIsModalOpen(false)}
-                    className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4"
-                >
-                    <motion.div
-                        initial={{ scale: 0.8, opacity: 0 }}
-                        animate={{ scale: 1, opacity: 1 }}
-                        exit={{ scale: 0.8, opacity: 0 }}
-                        onClick={(e) => e.stopPropagation()}
-                        className="bg-white rounded-2xl p-8 max-w-2xl w-full max-h-[80vh] overflow-y-auto border border-gray-600"
-                    >
-                        <div className="flex justify-between items-start mb-6">
-                            <h2 className={`${typography.serif} ${typography.heading.large} text-black`}>
-                                About future projections
-                            </h2>
-                            <button
-                                onClick={() => setIsModalOpen(false)}
-                                className="text-black hover:text-white transition-colors ml-4"
-                            >
-                                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                                </svg>
-                            </button>
-                        </div>
-                        <p className={`${typography.phonic} ${typography.body.medium} text-black leading-relaxed`}>
-                            Future projection uses Monte Carlo simulations to project a range of hypothetical market return scenarios, based on a historical performance analysis of asset class returns. Future projection is a feature available to Robinhood Strategies clients for informational purposes and is not intended to be a recommendation to invest in any security, or engage in any investment strategy. Past performance is not indicative of future results. All investing involves risk and loss of principal is possible.
-                        </p>
-                    </motion.div>
-                </motion.div>
-            )}
-        </AnimatePresence>
-    );
-};

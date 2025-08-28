@@ -86,13 +86,13 @@ const Footer: React.FC = () => {
             viewport={{ once: true, amount: 0.2 }}
             className="relative border-t border-black/10"
             style={{
-                background: 'linear-gradient(to bottom right, #ccff00, #b8e600, #a3d900)'
+                background: 'linear-gradient(to bottom right, var(--accent-color), var(--accent-hover), var(--accent-color))'
             }}
         >
             {/* Background Pattern */}
             <div className="absolute inset-0 opacity-5">
-                <div className="absolute top-0 right-0 w-96 h-96 bg-[#ccff00]/10 rounded-full blur-3xl" />
-                <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#ccff00]/5 rounded-full blur-2xl" />
+                <div className="absolute top-0 right-0 w-96 h-96 bg-[var(--accent-color)]/10 rounded-full blur-3xl" />
+                <div className="absolute bottom-0 left-0 w-64 h-64 bg-[var(--accent-color)]/5 rounded-full blur-2xl" />
             </div>
 
             <div className="relative z-10 container mx-auto px-4 py-12 lg:py-16">

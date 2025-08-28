@@ -8,6 +8,8 @@ export const COLORS = {
     WHITE: "white",
     HOVER: "rgba(255,255,255,0.1)",
     HOVER_DARK: "rgba(0,0,0,0.1)",
+    GOLD: "rgba(191, 170, 112, 1)",
+    GOLD_HEX: "#bfaa70ff",
 } as const;
 
 export const BREAKPOINTS = {
@@ -30,39 +32,39 @@ export const buttonStyles = {
     // Primary accent button - filled with accent color
     primary: {
         color: COLORS.BLACK,
-        backgroundColor: COLORS.ACCENT,
-        border: `1px solid ${COLORS.ACCENT}`,
+        backgroundColor: 'var(--accent-color)',
+        border: '1px solid var(--accent-color)',
         textTransform: 'inherit' as const,
         '&:hover': {
             backgroundColor: COLORS.BLACK,
-            borderColor: COLORS.ACCENT,
-            color: COLORS.ACCENT,
+            borderColor: 'var(--accent-color)',
+            color: 'var(--accent-color)',
         },
     },
 
     // Secondary outline button - accent border with transparent background
     secondary: {
-        color: COLORS.ACCENT,
-        borderColor: COLORS.ACCENT,
+        color: 'var(--accent-color)',
+        borderColor: 'var(--accent-color)',
         backgroundColor: 'transparent',
         border: "1px solid",
         textTransform: 'inherit' as const,
         '&:hover': {
-            backgroundColor: COLORS.ACCENT,
+            backgroundColor: 'var(--accent-color)',
             color: COLORS.BLACK,
         },
     },
 
     // Login button (secondary variant with black background)
     login: {
-        color: COLORS.ACCENT,
-        borderColor: COLORS.ACCENT,
+        color: 'var(--accent-color)',
+        borderColor: 'var(--accent-color)',
         backgroundColor: COLORS.BLACK,
         border: "1px solid",
         textTransform: 'inherit' as const,
         mx: 1,
         '&:hover': {
-            backgroundColor: COLORS.ACCENT,
+            backgroundColor: 'var(--accent-color)',
             color: COLORS.BLACK,
         },
     },
@@ -70,14 +72,14 @@ export const buttonStyles = {
     // Signup button (primary variant)
     signup: {
         color: COLORS.BLACK,
-        backgroundColor: COLORS.ACCENT,
-        border: `1px solid ${COLORS.ACCENT}`,
+        backgroundColor: 'var(--accent-color)',
+        border: '1px solid var(--accent-color)',
         textTransform: 'inherit' as const,
         mx: 1,
         '&:hover': {
             backgroundColor: COLORS.BLACK,
-            borderColor: COLORS.ACCENT,
-            color: COLORS.ACCENT,
+            borderColor: 'var(--accent-color)',
+            color: 'var(--accent-color)',
         },
     },
 

@@ -14,7 +14,7 @@ export interface SectionLayoutProps {
     contentAlignment?: 'left' | 'center' | 'right';
     backgroundImage?: string;
     imagePosition?: 'left' | 'right' | 'center' | 'background';
-    imageSize?: 'small' | 'medium' | 'large' | 'cover';
+    imageSize?: 'small' | 'medium' | 'large' | 'cover' | 'contain';
     overlay?: boolean;
 }
 
@@ -65,6 +65,8 @@ const SectionLayout: React.FC<SectionLayoutProps> = ({
                 return 'w-96 h-96 md:w-[500px] md:h-[500px]';
             case 'cover':
                 return 'w-full h-full object-cover';
+            case 'contain':
+                return 'w-full h-full object-contain';
             default:
                 return 'w-full h-auto';
         }
@@ -87,7 +89,7 @@ const SectionLayout: React.FC<SectionLayoutProps> = ({
             className={`relative min-h-screen ${getBackgroundClasses()} overflow-hidden ${className}`}
             style={backgroundImage && imagePosition === 'background' ? {
                 backgroundImage: `url(${backgroundImage})`,
-                backgroundSize: 'cover',
+                backgroundSize: imageSize === 'contain' ? 'contain' : 'cover',
                 backgroundPosition: 'center',
                 backgroundRepeat: 'no-repeat'
             } : undefined}
