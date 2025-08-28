@@ -1,3 +1,4 @@
+"use client"
 import { animationVariants, VIEWPORT_CONFIG } from "../constants/animations";
 import { spacing } from "../constants/styles";
 import ImageComponent from "./ImageComponent";
@@ -8,7 +9,7 @@ export interface SectionLayoutProps {
     id?: string;
     children: React.ReactNode;
     className?: string;
-    backgroundVariant?: 'default' | 'alternate' | 'accent';
+    backgroundVariant?: 'default' | 'alternate' | 'accent' | 'none';
     showDecorations?: boolean;
     contentAlignment?: 'left' | 'center' | 'right';
     backgroundImage?: string;
@@ -36,8 +37,10 @@ const SectionLayout: React.FC<SectionLayoutProps> = ({
                 return 'bg-gradient-to-br from-gray-900 to-black';
             case 'accent':
                 return 'bg-gradient-to-br from-black via-gray-900 to-green-950';
-            default:
+            case 'default':
                 return 'bg-gradient-to-br from-black to-gray-800';
+            case 'none':
+                return '';
         }
     };
 
