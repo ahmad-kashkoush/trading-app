@@ -10,6 +10,7 @@ import Popup from "@/_components/Popup"
 import InfoIcon from '@mui/icons-material/Info';
 import VideoComponent from "@/_components/VideoComponent"
 import Card from "@/gold/_components/Card"
+import AccordionSection from "@/_components/AccordionSection"
 
 
 export default function Gold() {
@@ -28,6 +29,8 @@ export default function Gold() {
         <SectionLayout1 />
         <SectionLayout2 />
         <SectionLayout3 />
+        <SectionLayout4 />
+        <AccordionSection />
     </main>
 }
 function SectionLayout1() {
@@ -108,11 +111,12 @@ function SectionLayout2() {
             <VideoComponent
                 src="/_RH24_Gold-productPage_4_Module_NoBoost_web_1440x900_v003.webm"
                 className="rounded-2xl overflow-hidden shadow-2xl"
-                autoPlay={true}
+                autoPlay={false}
                 muted={true}
                 loop={false}
                 showLastFrame={true}
                 controls={false}
+                playOnScroll={true}
                 onVideoEnd={() => { }}
             />
         </motion.div>
@@ -154,9 +158,9 @@ function SectionLayout2() {
 
     </SectionLayout>
 }
-function SectionLayout3(){
+function SectionLayout3() {
     const [isModalOpen, setIsModalOpen] = useState(false);
-    
+
     return <SectionLayout
         backgroundImage="/web_gold_ret.jpeg"
         imageSize="cover"
@@ -169,12 +173,12 @@ function SectionLayout3(){
                 <h2 className={`${typography.serif} ${typography.heading.large} ${typography.colors.goldFaded} max-w-3xl mb-6`}>
                     Boost your retirement with Robinhood Gold
                 </h2>
-                
+
                 {/* Description */}
                 <p className={`${typography.phonic} ${typography.body.large} ${typography.colors.gray} max-w-3xl mx-auto mb-4`}>
                     You contribute, we boost. Get a 3% match on annual contributions. That's $210 when maxing out your 2025 IRA contribution limit.
                 </p>
-                
+
                 {/* Disclosure with popup */}
                 <p className={`${typography.phonic} ${typography.body.small} font-light ${typography.colors.whiteFaded} hover:text-white transition-colors cursor-pointer flex items-center justify-center gap-2`}
                     onClick={() => setIsModalOpen(true)}>
@@ -182,7 +186,7 @@ function SectionLayout3(){
                     Subscription ($5/month) and limitations apply
                 </p>
             </motion.div>
-            
+
             {/* CTA */}
             <motion.div variants={animationVariants.slideUp} className={`${spacing.margins.top.medium} text-center`}>
                 <ThemeButton
@@ -206,4 +210,46 @@ IRS contribution limit for 2025 is $7,000 ($8,000 if you're age 50 or older). Vi
 The 3% matching on contributions requires a subscription with Robinhood Gold ($5/mo) and customers must stay subscribed to Gold for 1 year after your first Gold match to keep the full Gold match. The funds that earned the match must be kept in the account for at least 5 years to avoid a potential Early IRA Match Removal Fee. Match rate subject to change. Non-Gold customers receive a 1% match. For more information refer to the IRA Match FAQ."
         />
     </SectionLayout>;
+}
+function SectionLayout4() {
+    return <SectionLayout
+        backgroundVariant="default"
+        contentAlignment="center"
+        showDecorations={true}
+        // className="h-[100vh]"
+    >
+        <div className="w-full h-full flex flex-col">
+            {/* Section Header with SectionLayout3 style */}
+            <motion.div variants={animationVariants.slideUp} className={`${spacing.section} text-center mb-12`}>
+                <h2 className={`${typography.serif} ${typography.heading.large} ${typography.colors.goldFaded} max-w-3xl mx-auto`}>
+                    Maximize your money's potential.
+                </h2>
+            </motion.div>
+
+            {/* 2 Column Card Layout */}
+            <motion.div
+                variants={animationVariants.slideUp}
+                className="h-full grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto flex-1"
+            >
+                {/* Card 1 */}
+                <Card
+                    title="Smart Investing"
+                    description="Diversify your portfolio with intelligent investment strategies designed to maximize returns while minimizing risk through advanced algorithms."
+                    disclaimerText="Learn more about our investment strategies."
+                    disclaimerTitle="Investment Strategies"
+                    disclaimerDescription="Our investment strategies are designed to help you achieve your financial goals while managing risk."
+                    ctaText="Join the waitlist"
+                    smallText="Min. investment $1. SIPC protected."
+                    backgroundImage="value_prop_credit_card.jpg"
+                />
+
+                <Card
+                    title="Premium Benefits"
+                    description="Unlock exclusive features including priority support, advanced analytics, and premium research tools to elevate your trading experience."
+                    ctaText="Upgrade Now"
+                    smallText="$5/month. Cancel anytime."
+                    backgroundImage="value_prop_banking.jpg"/>
+            </motion.div>
+        </div>
+    </SectionLayout>
 }

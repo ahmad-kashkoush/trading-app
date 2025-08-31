@@ -14,9 +14,10 @@ import ThemeButton from '@/_components/ThemeButton';
 import Link from 'next/link';
 import SectionHeader from '@/_components/SectionHeader';
 import TabsComponent from './_components/TabsComponent';
-import AccordionComponent from './_components/AccordionComponent';
+import AccordionComponent from '../_components/AccordionComponent';
 import { Typography } from '@mui/material';
 import Popup from '@/_components/Popup';
+import AccordionSection from '@/_components/AccordionSection';
 
 
 
@@ -124,25 +125,9 @@ function SectionLayout2(): JSX.Element {
 }
 
 // SectionLayout3 Component - FAQ Section
-function SectionLayout3(): JSX.Element {
-    return (
-        <SectionLayout
-            backgroundVariant="none"
-            contentAlignment="center"
-            className='bg-black py-16'
-        >
-            <motion.div variants={animationVariants.slideUp}>
-                <h2 className={`${typography.phonic} ${typography.colors.white} ${typography.heading.large} mb-12`}>
-                    Frequently Asked Questions
-                </h2>
-            </motion.div>
 
-            <motion.div
-                variants={animationVariants.slideUp}
-                className="w-full"
-            >
-                <AccordionComponent />
-            </motion.div>
-        </SectionLayout>
-    );
+
+function SectionLayout3() {
+
+    return <AccordionSection />
 }
