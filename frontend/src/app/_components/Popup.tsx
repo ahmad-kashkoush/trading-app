@@ -13,6 +13,25 @@ type PopupProps = {
 
 // Popup Component
 export default function Popup({ isModalOpen, setIsModalOpen, title = "title", description = "description" }: PopupProps): React.JSX.Element {
+    // Handle Esc key press to close popup
+    useEffect(() => {
+        const handleEscKey = (event: KeyboardEvent) => {
+            if (event.key === "Escape" && isModalOpen) {
+                setIsModalOpen(false);
+            }
+        };
+
+        // Add event listener when popup is open
+        if (isModalOpen) {
+            document.addEventListener("keydown", handleEscKey);
+        }
+
+        // Cleanup event listener
+        return () => {
+            document.removeEventListener("keydown", handleEscKey);
+        };
+    }, [isModalOpen, setIsModalOpen]);
+
     return (
         <AnimatePresence>
             {isModalOpen && (
