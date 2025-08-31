@@ -1,7 +1,7 @@
 "use client"
-import { animationVariants, VIEWPORT_CONFIG } from "@/constants/animations";
-import { spacing } from "@/constants/styles";
-import ImageComponent from "./ImageComponent";
+import { animationVariants, VIEWPORT_CONFIG } from "@/styles/animations";
+import { spacing } from "@/styles";
+import { Image as ImageComponent } from "@/components/ui";
 import { motion } from 'framer-motion';
 
 // Reusable Section Component Interface

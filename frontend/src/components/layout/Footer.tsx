@@ -2,7 +2,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import Logo from './Logo';
+import { Logo } from '@/components/ui';
 
 const Footer: React.FC = () => {
     const footerVariants = {

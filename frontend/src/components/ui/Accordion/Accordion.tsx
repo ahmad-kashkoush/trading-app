@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ExpandMore as ExpandMoreIcon } from '@mui/icons-material';
-import { typography } from '@/constants/styles';
+import { typography } from '@/styles';
 import { COLORS } from '@/styles/theme';
 
 interface FAQItem {

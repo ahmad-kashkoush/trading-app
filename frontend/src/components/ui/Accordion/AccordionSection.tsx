@@ -1,9 +1,9 @@
 "use client"
-import {motion} from "framer-motion";
-import SectionLayout from "@/_components/SectionLayout";
-import AccordionComponent from "@/_components/AccordionComponent";
-import { animationVariants } from "@/constants/animations";
-import { typography } from "@/constants/styles";
+import SectionLayout from "@/components/layout/SectionLayout";
+import { Accordion as AccordionComponent } from "@/components/ui/Accordion";
+import { typography } from "@/styles";
+import { animationVariants } from "@/styles/animations";
+import { motion } from "framer-motion";
 import { JSX } from "react";
 export default function AccordionSection(): JSX.Element {
     return (

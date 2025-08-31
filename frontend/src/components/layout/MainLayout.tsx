@@ -1,14 +1,11 @@
 "use client"
-import React from 'react';
-import { motion, Variants } from 'framer-motion';
-import ThemeButton from './ThemeButton';
-import ImageComponent from './ImageComponent';
-import SectionHeader from './SectionHeader';
-import SectionLayout from './SectionLayout';
+import { SectionHeader, SectionLayout } from '@/components/layout';
+import { Image as ImageComponent, Button as ThemeButton } from '@/components/ui';
+import { buttonClasses, cardStyles, COLORS, decorative, gridPatterns, spacing, typography } from '@/styles';
+import { animationVariants, HOVER_ANIMATIONS, VIEWPORT_CONFIG } from '@/styles/animations';
+import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { animationVariants, VIEWPORT_CONFIG, HOVER_ANIMATIONS } from '../constants/animations';
-import { typography, spacing, buttonClasses, gridPatterns, cardStyles, decorative } from '../constants/styles';
-import { COLORS } from '../styles/theme';
+import React from 'react';
 
 
 
