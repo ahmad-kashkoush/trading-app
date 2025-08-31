@@ -24,7 +24,7 @@ import {
     ExpandLess as ExpandLessIcon,
 } from '@mui/icons-material';
 import Link from 'next/link';
-import Logo from './Logo';
+import { Logo } from '@/components/ui';
 import { COLORS, BREAKPOINTS, buttonStyles, menuStyles } from '@/styles/theme';
 
 // Navigation data

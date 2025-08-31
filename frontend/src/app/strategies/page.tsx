@@ -1,23 +1,15 @@
 
-"use client"
-import { motion, AnimatePresence } from 'framer-motion';
-import { useState } from 'react';
-import InfoIcon from '@mui/icons-material/Info';
-import Logo from "@/_components/Logo";
-import SectionLayout from "@/_components/SectionLayout";
-import VideoComponent from "@/_components/VideoComponent";
-import { animationVariants } from "@/constants/animations";
-import { spacing, typography } from '@/constants/styles';
-import { COLORS } from '@/styles/theme';
-import { JSX } from '@emotion/react/jsx-runtime';
-import ThemeButton from '@/_components/ThemeButton';
-import Link from 'next/link';
-import SectionHeader from '@/_components/SectionHeader';
-import TabsComponent from './_components/TabsComponent';
-import AccordionComponent from '../_components/AccordionComponent';
-import { Typography } from '@mui/material';
-import Popup from '@/_components/Popup';
-import AccordionSection from '@/_components/AccordionSection';
+"use client";
+import {SectionLayout, AccordionSection} from "@/components/layout";
+import { Logo, Popup, Button as ThemeButton, Video as VideoComponent } from "@/components/ui";
+import { animationVariants } from "@/styles/animations";
+import { spacing, typography } from "@/styles";
+import { COLORS } from "@/styles/theme";
+import { motion } from "framer-motion";
+import { JSX, useState } from "react";
+import TabsComponent from "./_components/TabsComponent";
+import { Info } from "@mui/icons-material";
+import Link from "next/link";
 
 
 
@@ -80,7 +72,7 @@ function SectionLayout1(): JSX.Element {
             </p>
             <p className={`${typography.phonic} ${typography.body.small} font-light ${typography.colors.whiteFaded} ${spacing.maxWidth.xsmall} hover:text-white transition-colors cursor-pointer flex items-center justify-center gap-2`}
                 onClick={() => setIsModalOpen(true)}>
-                <InfoIcon sx={{ fontSize: 16 }} />
+                <Info sx={{ fontSize: 16 }} />
                 For Illustrative purposes only. Not an actual customer account or portfolio.
             </p>
             <ThemeButton

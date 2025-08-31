@@ -9,7 +9,7 @@ import React from 'react';
 
 
 
-const Home: React.FC = () => {
+export default function Home() {
     return (
         <main className="relative overflow-hidden">
             <SectionLayout1 />

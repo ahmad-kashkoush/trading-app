@@ -1,16 +1,12 @@
 "use client"
-import { useEffect, useState } from "react"
-import SectionLayout from "@/_components/SectionLayout"
+import Card from "@/app/gold/_components/Card"
+import { Popup, Button as ThemeButton, Video as VideoComponent } from "@/components/ui"
+import { SectionLayout, AccordionSection } from "@/components/layout"
+import { animationVariants } from "@/styles/animations"
+import { buttonClasses, spacing, typography } from "@/styles"
+import InfoIcon from '@mui/icons-material/Info'
 import { motion } from "framer-motion"
-import { animationVariants } from "@/constants/animations"
-import { buttonClasses, spacing, typography } from "@/constants/styles"
-import ThemeButton from "@/_components/ThemeButton"
-import { COLORS } from "@/styles/theme"
-import Popup from "@/_components/Popup"
-import InfoIcon from '@mui/icons-material/Info';
-import VideoComponent from "@/_components/VideoComponent"
-import Card from "@/gold/_components/Card"
-import AccordionSection from "@/_components/AccordionSection"
+import { useEffect, useState } from "react"
 
 
 export default function Gold() {

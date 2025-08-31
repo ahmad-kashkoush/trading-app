@@ -1,11 +1,8 @@
 "use client"
+import { Popup, Button as ThemeButton } from '@/components/ui';
+import { buttonClasses, typography } from '@/styles';
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { typography, buttonClasses } from '@/constants/styles';
-import ThemeButton from '@/_components/ThemeButton';
-import Popup from '@/_components/Popup';
-import InfoIcon from '@mui/icons-material/Info';
-
+import { Info } from '@mui/icons-material';
 interface CardProps {
     title: string;
     description: string;
@@ -64,7 +61,7 @@ const Card: React.FC<CardProps> = ({
                     {disclaimerText !== '' &&
                         <p className={`${typography.phonic} ${typography.body.small} ${typography.colors.whiteFaded} hover:text-white transition-colors cursor-pointer flex items-center gap-2 mb-6`}
                             onClick={() => setIsModalOpen(true)}>
-                            <InfoIcon sx={{ fontSize: 16 }} />
+                            <Info sx={{ fontSize: 16 }} />
                             {disclaimerText}
                         </p>
                     }
