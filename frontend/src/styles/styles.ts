@@ -1,5 +1,5 @@
 // Typography and styling constants
-import { COLORS } from '@/styles/theme';
+import { COLORS } from './theme';
 
 // Typography classes - reusable text styles
 export const typography = {
