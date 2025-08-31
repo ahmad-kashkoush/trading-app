@@ -3,8 +3,8 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ExpandMore as ExpandMoreIcon } from '@mui/icons-material';
-import { typography } from '../../constants/styles';
-import { COLORS } from '../../styles/theme';
+import { typography } from '@/constants/styles';
+import { COLORS } from '@/styles/theme';
 
 interface FAQItem {
     id: string;

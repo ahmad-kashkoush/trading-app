@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button, ButtonProps } from '@mui/material';
-import { buttonStyles } from '../styles/theme';
+import { buttonStyles } from '@/styles/theme';
 
 // Extend ButtonProps to include our custom variant types
 interface CustomButtonProps extends Omit<ButtonProps, 'variant'> {

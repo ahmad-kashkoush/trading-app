@@ -3,20 +3,20 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
 import InfoIcon from '@mui/icons-material/Info';
-import Logo from "../_components/Logo";
-import SectionLayout from "../_components/SectionLayout";
-import VideoComponent from "../_components/VideoComponent";
-import { animationVariants } from "../constants/animations";
-import { spacing, typography } from '../constants/styles';
-import { COLORS } from '../styles/theme';
+import Logo from "@/_components/Logo";
+import SectionLayout from "@/_components/SectionLayout";
+import VideoComponent from "@/_components/VideoComponent";
+import { animationVariants } from "@/constants/animations";
+import { spacing, typography } from '@/constants/styles';
+import { COLORS } from '@/styles/theme';
 import { JSX } from '@emotion/react/jsx-runtime';
-import ThemeButton from '../_components/ThemeButton';
+import ThemeButton from '@/_components/ThemeButton';
 import Link from 'next/link';
-import SectionHeader from '../_components/SectionHeader';
+import SectionHeader from '@/_components/SectionHeader';
 import TabsComponent from './_components/TabsComponent';
 import AccordionComponent from './_components/AccordionComponent';
 import { Typography } from '@mui/material';
-import Popup from '../_components/Popup';
+import Popup from '@/_components/Popup';
 
 
 

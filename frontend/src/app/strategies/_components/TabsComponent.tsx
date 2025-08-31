@@ -2,9 +2,9 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import VideoComponent from '../../_components/VideoComponent';
-import { COLORS } from '../../styles/theme';
-import { typography } from '../../constants/styles';
+import VideoComponent from '@/_components/VideoComponent';
+import { COLORS } from '@/styles/theme';
+import { typography } from '@/constants/styles';
 
 interface TabData {
     id: string;

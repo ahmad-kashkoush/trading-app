@@ -1,6 +1,6 @@
 "use client"
-import { animationVariants, VIEWPORT_CONFIG } from "../constants/animations";
-import { spacing } from "../constants/styles";
+import { animationVariants, VIEWPORT_CONFIG } from "@/constants/animations";
+import { spacing } from "@/constants/styles";
 import ImageComponent from "./ImageComponent";
 import { motion } from 'framer-motion';
 

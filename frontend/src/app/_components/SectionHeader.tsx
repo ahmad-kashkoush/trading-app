@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { animationVariants } from '../constants/animations';
-import { typography, spacing, decorative } from '../constants/styles';
+import { animationVariants } from '@/constants/animations';
+import { typography, spacing, decorative } from '@/constants/styles';
 
 interface SectionHeaderProps {
   accent?: string;

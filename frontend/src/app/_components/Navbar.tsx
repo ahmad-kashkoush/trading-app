@@ -25,7 +25,7 @@ import {
 } from '@mui/icons-material';
 import Link from 'next/link';
 import Logo from './Logo';
-import { COLORS, BREAKPOINTS, buttonStyles, menuStyles } from '../styles/theme';
+import { COLORS, BREAKPOINTS, buttonStyles, menuStyles } from '@/styles/theme';
 
 // Navigation data
 const navItems = [

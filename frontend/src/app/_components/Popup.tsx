@@ -1,7 +1,7 @@
 "use client"
-import React from "react";
+import React, { useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { typography } from "../constants/styles";
+import { typography } from "@/constants/styles";
 
 // Popup Component Props Type
 type PopupProps = {
