@@ -11,6 +11,7 @@ interface VideoComponentProps {
     onVideoEnd?: () => void;
     poster?: string; // Optional poster image
     controls?: boolean; // Show video controls
+    playOnScroll?: boolean; // Play video when it comes into view (first time)
 }
 
 const VideoComponent: React.FC<VideoComponentProps> = ({
@@ -22,13 +23,16 @@ const VideoComponent: React.FC<VideoComponentProps> = ({
     showLastFrame = true,
     onVideoEnd,
     poster,
-    controls = false
+    controls = false,
+    playOnScroll = false
 }) => {
     const videoRef = useRef<HTMLVideoElement>(null);
     const canvasRef = useRef<HTMLCanvasElement>(null);
+    const containerRef = useRef<HTMLDivElement>(null);
     const [isEnded, setIsEnded] = useState(false);
     const [lastFrameUrl, setLastFrameUrl] = useState<string>('');
     const [isLoading, setIsLoading] = useState(true);
+    const [hasPlayedOnScroll, setHasPlayedOnScroll] = useState(false);
 
     useEffect(() => {
         const video = videoRef.current;
@@ -44,8 +48,8 @@ const VideoComponent: React.FC<VideoComponentProps> = ({
 
         const handleLoadedData = () => {
             setIsLoading(false);
-            // Ensure video is ready to play
-            if (autoPlay) {
+            // Only auto-play if not using playOnScroll mode
+            if (autoPlay && !playOnScroll) {
                 video.play().catch(console.error);
             }
         };
@@ -78,10 +82,40 @@ const VideoComponent: React.FC<VideoComponentProps> = ({
             video.removeEventListener('loadeddata', handleLoadedData);
             video.removeEventListener('canplay', handleCanPlay);
         };
-    }, [autoPlay, showLastFrame, onVideoEnd]);
+    }, [autoPlay, showLastFrame, onVideoEnd, playOnScroll]);
+
+    // Intersection Observer for playOnScroll
+    useEffect(() => {
+        if (!playOnScroll || hasPlayedOnScroll) return;
+
+        const container = containerRef.current;
+        const video = videoRef.current;
+        if (!container || !video) return;
+
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting && !hasPlayedOnScroll) {
+                        setHasPlayedOnScroll(true);
+                        video.play().catch(console.error);
+                    }
+                });
+            },
+            {
+                threshold: 0.5, // Play when 50% of the video is visible
+                rootMargin: '0px'
+            }
+        );
+
+        observer.observe(container);
+
+        return () => {
+            observer.disconnect();
+        };
+    }, [playOnScroll, hasPlayedOnScroll]);
 
     return (
-        <div className={`relative ${className}`}>
+        <div ref={containerRef} className={`relative ${className}`}>
             <canvas ref={canvasRef} className="hidden" />
 
             {/* Video Element */}
@@ -113,7 +147,7 @@ const VideoComponent: React.FC<VideoComponentProps> = ({
                     transition={{ duration: 0.5 }}
                     src={lastFrameUrl}
                     alt="Video thumbnail"
-                    className="absolute inset-0 w-full h-full object-cover cursor-pointer"
+                    className="absolute inset-0 w-full h-full object-cover"
                 />
             )}
         </div>
