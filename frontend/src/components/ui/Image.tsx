@@ -1,6 +1,7 @@
 "use client"
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 
 interface ImageComponentProps {
     src: string;
@@ -11,6 +12,7 @@ interface ImageComponentProps {
     errorClassName?: string;
     lazy?: boolean;
     priority?: boolean;
+    objectFit?: 'cover' | 'contain' | 'fill' | 'none' | 'scale-down';
 }
 
 const ImageComponent: React.FC<ImageComponentProps> = ({
@@ -21,7 +23,8 @@ const ImageComponent: React.FC<ImageComponentProps> = ({
     loadingClassName = 'bg-gray-800 animate-pulse',
     errorClassName = 'bg-gray-800 flex items-center justify-center text-gray-400',
     lazy = true,
-    priority = false
+    priority = false,
+    objectFit = 'cover'
 }) => {
     const [imageState, setImageState] = useState<'loading' | 'loaded' | 'error'>('loading');
     const [imageSrc, setImageSrc] = useState(src);
@@ -52,19 +55,17 @@ const ImageComponent: React.FC<ImageComponentProps> = ({
                 </div>
             )}
 
-            <motion.img
+            <Image
                 src={imageSrc}
                 alt={alt}
                 onLoad={handleLoad}
                 onError={handleError}
-                loading={lazy ? 'lazy' : priority ? 'eager' : 'lazy'}
-                initial={{ opacity: 0, scale: 1.1 }}
-                animate={{ 
-                    opacity: imageState === 'loaded' ? 1 : 0,
-                    scale: imageState === 'loaded' ? 1 : 1.1
-                }}
-                transition={{ duration: 0.6, ease: [0.25, 0.1, 0.25, 1] }}
-                className="w-full h-full object-cover"
+                loading={priority ? undefined : (lazy ? 'lazy' : 'eager')}
+                fill
+                className={`w-full h-full object-${objectFit} opacity-100 scale-100`}
+                sizes="100vw"
+                priority={priority}
+                unoptimized={imageSrc.startsWith('http') && !imageSrc.startsWith(process.env.NEXT_PUBLIC_IMAGE_DOMAIN || '')}
             />
         </div>
     );
