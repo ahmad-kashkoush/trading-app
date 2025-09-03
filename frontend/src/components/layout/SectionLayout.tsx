@@ -16,7 +16,9 @@ export interface SectionLayoutProps {
     imagePosition?: 'left' | 'right' | 'center' | 'background';
     imageSize?: 'small' | 'medium' | 'large' | 'cover' | 'contain';
     overlay?: boolean;
+    minHeight?: string;
 }
+
 
 // Reusable Section Component
 const SectionLayout: React.FC<SectionLayoutProps> = ({
@@ -29,7 +31,8 @@ const SectionLayout: React.FC<SectionLayoutProps> = ({
     backgroundImage,
     imagePosition = 'background',
     imageSize = 'cover',
-    overlay = false
+    overlay = false,
+    minHeight = 'min-h-screen'
 }) => {
     const getBackgroundClasses = () => {
         switch (backgroundVariant) {
@@ -86,7 +89,7 @@ const SectionLayout: React.FC<SectionLayoutProps> = ({
             initial="hidden"
             whileInView="visible"
             viewport={VIEWPORT_CONFIG}
-            className={`relative min-h-screen ${getBackgroundClasses()} overflow-hidden ${className}`}
+            className={`relative  ${getBackgroundClasses()} overflow-hidden  ${className} ${minHeight}`}
             style={backgroundImage && imagePosition === 'background' ? {
                 backgroundImage: `url(${backgroundImage})`,
                 backgroundSize: imageSize === 'contain' ? 'contain' : 'cover',
@@ -99,7 +102,7 @@ const SectionLayout: React.FC<SectionLayoutProps> = ({
                 <div className="absolute inset-0 bg-black/80 z-0" />
             )}
 
-            <div className={`${spacing.container} flex flex-col justify-center min-h-screen relative z-10 ${getContentAlignment()}`}>
+            <div className={`${spacing.container} flex flex-col justify-center h-inherit relative z-10 ${getContentAlignment()}`}>
                 <div className={`${spacing.maxWidth.content} ${spacing.section} ${getLayoutClasses()}`}>
                     {/* Image Section (when positioned left/right/center) */}
                     {backgroundImage && imagePosition !== 'background' && (
