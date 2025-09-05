@@ -29,7 +29,7 @@ const UserSchema = new mongoose.Schema(
     profileImage: {
       type: String,
     },
-    active: {
+    isVerified: {
       type: Boolean,
       default: false,
     },
@@ -40,6 +40,12 @@ const UserSchema = new mongoose.Schema(
     },
     verifiedCode: {
       type: String, // Store hashed verification code
+    },
+    resetCode: {
+      type: String, // Store hashed reset code
+    },
+    resetCodeExpiry: {
+      type: Date, // Store expiry time for reset code
     },
     expireVerifyCode: {
       type: Date, // Store expiry time for verification code
