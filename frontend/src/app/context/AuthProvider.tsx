@@ -3,11 +3,11 @@
 import React from 'react';
 import { SessionProvider } from 'next-auth/react';
 
-interface AuthWrapperProps {
+interface AuthProviderProps {
   children: React.ReactNode;
 }
 
-const AuthWrapper: React.FC<AuthWrapperProps> = ({ children }) => {
+const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   return (
     <SessionProvider>
       {children}
@@ -15,4 +15,4 @@ const AuthWrapper: React.FC<AuthWrapperProps> = ({ children }) => {
   );
 };
 
-export default AuthWrapper;
+export default AuthProvider;
