@@ -16,14 +16,18 @@ import {
     ListItemText,
     Collapse,
     Box,
+    Avatar,
+    CircularProgress,
 } from '@mui/material';
 import {
     Menu as MenuIcon,
     Close as CloseIcon,
     ExpandMore as ExpandMoreIcon,
     ExpandLess as ExpandLessIcon,
+    AccountCircle,
 } from '@mui/icons-material';
 import Link from 'next/link';
+import { useSession, signOut } from 'next-auth/react';
 import { Logo } from '@/components/ui';
 import { COLORS, BREAKPOINTS, buttonStyles, menuStyles } from '@/styles/theme';
 
@@ -69,6 +73,12 @@ interface NavButtonProps {
 interface AuthButtonsProps {
     isTablet: boolean;
     isSmall: boolean;
+    isMobile?: boolean;
+    onNavClick?: () => void;
+}
+
+interface UserMenuProps {
+    user: any;
     isMobile?: boolean;
     onNavClick?: () => void;
 }
@@ -167,7 +177,107 @@ const AuthButtons: React.FC<AuthButtonsProps> = ({ isTablet, isSmall, isMobile, 
     );
 };
 
+const UserMenu: React.FC<UserMenuProps> = ({ user, isMobile, onNavClick }) => {
+    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+    const open = Boolean(anchorEl);
+
+    const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
+
+    const handleLogout = async () => {
+        await signOut({ callbackUrl: '/' });
+        handleClose();
+        onNavClick?.();
+    };
+
+    const userDisplayName = user?.name || user?.email || 'User';
+    const userInitials = userDisplayName.split(' ').map((n: string) => n[0]).join('').toUpperCase().slice(0, 2);
+
+    if (isMobile) {
+        return (
+            <Box sx={{ mt: 2, px: 2 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', mb: 2, p: 2, backgroundColor: 'rgba(255,255,255,0.05)', borderRadius: 1 }}>
+                    <Avatar 
+                        src={user?.image} 
+                        sx={{ 
+                            bgcolor: user?.image ? 'transparent' : 'var(--accent-color)', 
+                            color: user?.image ? 'inherit' : 'black', 
+                            mr: 2 
+                        }}
+                    >
+                        {!user?.image && userInitials}
+                    </Avatar>
+                    <Box>
+                        <Typography variant="body1" sx={{ color: 'white', fontWeight: 500 }}>
+                            {userDisplayName}
+                        </Typography>
+                        <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.7)' }}>
+                            {user?.email}
+                        </Typography>
+                    </Box>
+                </Box>
+                <Button
+                    onClick={handleLogout}
+                    fullWidth
+                    sx={{ ...buttonStyles.danger, py: 1.5, fontSize: '1.1rem' }}
+                >
+                    Sign Out
+                </Button>
+            </Box>
+        );
+    }
+
+    return (
+        <>
+            <IconButton
+                onClick={handleClick}
+                sx={{ color: 'white' }}
+            >
+                <Avatar 
+                    src={user?.image} 
+                    sx={{ 
+                        bgcolor: user?.image ? 'transparent' : 'var(--accent-color)', 
+                        color: user?.image ? 'inherit' : 'black', 
+                        width: 32, 
+                        height: 32 
+                    }}
+                >
+                    {!user?.image && userInitials}
+                </Avatar>
+            </IconButton>
+            <Menu
+                anchorEl={anchorEl}
+                open={open}
+                onClose={handleClose}
+                PaperProps={{ sx: menuStyles.paper }}
+            >
+                <MenuItem disabled>
+                    <Box>
+                        <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.7)' }}>
+                            {userDisplayName}
+                        </Typography>
+                        <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.5)' }}>
+                            {user?.email}
+                        </Typography>
+                    </Box>
+                </MenuItem>
+                <MenuItem onClick={handleLogout}>
+                    Sign Out
+                </MenuItem>
+            </Menu>
+        </>
+    );
+};
+
 const Navbar: React.FC = () => {
+    // Session
+    const { data: session, status } = useSession();
+    
     // Media queries
     const isDesktop = useMediaQuery(BREAKPOINTS.DESKTOP);
     const isTablet = useMediaQuery(BREAKPOINTS.TABLET);
@@ -249,7 +359,15 @@ const Navbar: React.FC = () => {
 
                     {/* Right side */}
                     <div className="flex ml-auto gap-2 items-center">
-                        <AuthButtons isTablet={isTablet} isSmall={isSmall} />
+                        {status === 'loading' ? (
+                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                <CircularProgress size={20} sx={{ color: 'white' }} />
+                            </Box>
+                        ) : session ? (
+                            <UserMenu user={session.user} />
+                        ) : (
+                            <AuthButtons isTablet={isTablet} isSmall={isSmall} />
+                        )}
 
                         {!isDesktop && (
                             <IconButton
@@ -353,14 +471,18 @@ const Navbar: React.FC = () => {
                             </div>
                         ))}
 
-                        {/* Mobile Auth Buttons */}
+                        {/* Mobile Auth Section */}
                         <Box sx={{ mt: 4, px: 2 }}>
-                            <AuthButtons
-                                isTablet={isTablet}
-                                isSmall={isSmall}
-                                isMobile
-                                onNavClick={handleNavItemClick}
-                            />
+                            {session ? (
+                                <UserMenu user={session.user} isMobile onNavClick={handleNavItemClick} />
+                            ) : (
+                                <AuthButtons
+                                    isTablet={isTablet}
+                                    isSmall={isSmall}
+                                    isMobile
+                                    onNavClick={handleNavItemClick}
+                                />
+                            )}
                         </Box>
                     </List>
                 </Box>
