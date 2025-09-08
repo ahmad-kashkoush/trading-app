@@ -2,6 +2,9 @@
 
 A modern trading application built with Next.js, Material UI, and NextAuth.js.
 
+## Demo
+https://github.com/user-attachments/assets/b48c61c6-95c4-45e3-8811-df6a5eb21726
+
 ## Features
 
 - **Authentication**: Secure login/signup with NextAuth.js
@@ -64,4 +67,5 @@ The app uses Next.js middleware for route protection. Protected routes are autom
 - `npm run dev` - Start development server
 - `npm run build` - Build for production
 - `npm run start` - Start production server
+
 - `npm run lint` - Run ESLint
