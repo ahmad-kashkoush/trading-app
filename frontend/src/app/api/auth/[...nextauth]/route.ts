@@ -111,6 +111,18 @@ const options: NextAuthOptions = {
             },
             async authorize(credentials) {
                 try {
+                    // Handle demo login specially
+                    if (credentials?.username === 'demo' && credentials?.password === 'demo123') {
+                        return {
+                            id: 'demo_user_id',
+                            name: 'Demo User',
+                            email: 'demo@example.com',
+                            role: 'user',
+                            isVerified: true,
+                            backendToken: 'demo_token',
+                        };
+                    }
+
                     // Call our backend login API
                     const response = await fetch("http://localhost:5000/api/user/login", {
                         method: "POST",
