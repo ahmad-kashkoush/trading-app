@@ -41,6 +41,17 @@ const UserSchema = new mongoose.Schema(
     expireVerifyCode: {
       type: Date, // Store expiry time for verification code
     },
+    // todo refactor
+    isVerified: {
+      type: Boolean,
+      default: false, // Whether email is verified
+    },
+    resetCode: {
+      type: String, // Store hashed reset code for password reset
+    },
+    resetCodeExpiry: {
+      type: Date, // Store expiry time for reset code
+    },
   },
   { timestamps: true }
 );

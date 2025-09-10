@@ -116,6 +116,59 @@ const VerifyEmail = async (req, res) => {
       .json({ message: "Server error during email verification" });
   }
 };
+// todo: refactor
+const ResendVerificationCode = async (req, res) => {
+  try {
+    // 1. Check if user exists and is authenticated
+    const existingUser = await User.findById(req.user._id);
+    if (!existingUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // 2. Check if user is already verified
+    if (existingUser.isVerified) {
+      return res.status(400).json({ message: "Email is already verified" });
+    }
+
+    // 3. Generate new 6-digit verification code
+    const code = Math.floor(100000 + Math.random() * 900000).toString();
+    const hashCode = crypto.createHash("sha256").update(code).digest("hex");
+
+    // 4. Update user with new verification code and expiry
+    existingUser.verifiedCode = hashCode;
+    existingUser.expireVerifyCode = Date.now() + 10 * 60 * 1000; // 10 minutes expiry
+
+    // 5. Prepare email content
+    const message = `Hi ${existingUser.fullName},\nWe sent your new verification code from Trading App. Your code is: ${code}\nPlease enter this code on the website to verify your email.`;
+
+    // 6. Send verification email
+    try {
+      await sendEmailCode({
+        email: existingUser.email,
+        subject: "New Email Verification Code",
+        message,
+      });
+    } catch (error) {
+      console.error("Email sending failed:", error);
+      return res
+        .status(500)
+        .json({ message: "Failed to send verification email" });
+    }
+
+    // 7. Save updated user to database
+    await existingUser.save();
+
+    // 8. Send success response
+    return res.status(200).json({ 
+      message: "New verification code sent to your email" 
+    });
+  } catch (error) {
+    console.error("Resend verification code error:", error);
+    return res.status(500).json({ 
+      message: "Server error during resending verification code" 
+    });
+  }
+};
 const Login = async (req, res) => {
   // Implement login logic here
   const { email, password } = req.body;
@@ -251,9 +304,11 @@ const ProtectedRoute = async (req, res, next) => {
 module.exports = {
   Signup,
   VerifyEmail,
+  ResendVerificationCode,
   ProtectedRoute,
   Login,
   ForgetPassword,
   ResetPasswordCode,
-  resetPassword,getAllUsers
+  resetPassword,
+  getAllUsers
 };
