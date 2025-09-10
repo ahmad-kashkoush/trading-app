@@ -49,8 +49,14 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, onError }) => {
         // Get the session to verify login
         const session = await getSession();
         if (session) {
-          onSuccess?.();
-          router.push('/'); // Redirect to home page
+          // Check if user is verified
+          if (session.user.isVerified) {
+            onSuccess?.();
+            router.push('/dashboard'); // Redirect to dashboard if verified
+          } else {
+            // User is not verified, redirect to verification page
+            router.push('/verify-email');
+          }
         }
       }
     } catch (err) {
