@@ -5,16 +5,73 @@ import { GithubProfile } from "next-auth/providers/github";
 const options: NextAuthOptions = {
     providers: [
         GithubProvider({
-            profile(profile: GithubProfile) {
-                return {
-                    ...profile, 
-                    id: profile.id.toString(),
-                    image: profile.avatar_url,
-                    name: profile.name,
-                    role: "user",
+            async profile(profile: GithubProfile) {
+                try {
+                    // Map GitHub profile to database fields
+                    const githubData = {
+                        email: profile.email,
+                        fullName: profile.name || profile.login,
+                        password: `github_${profile.id}_temp`, // Temporary password for GitHub users
+                    };
+
+                    // Step 1: Try login first (if email already exists)
+                    let loginResponse = await fetch("http://localhost:5000/api/user/login", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            email: githubData.email,
+                            password: githubData.password,
+                        }),
+                    });
+
+                    // Step 2: If login fails, do signup
+                    if (!loginResponse.ok) {
+                        const signupResponse = await fetch("http://localhost:5000/api/user/signup", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify(githubData),
+                        });
+
+                        if (signupResponse.ok) {
+                            // Step 3: Login after successful signup
+                            loginResponse = await fetch("http://localhost:5000/api/user/login", {
+                                method: "POST",
+                                headers: { "Content-Type": "application/json" },
+                                body: JSON.stringify({
+                                    email: githubData.email,
+                                    password: githubData.password,
+                                }),
+                            });
+                        }
+                    }
+
+                    // Step 4: Return user data from login
+                    if (loginResponse.ok) {
+                        const loginResult = await loginResponse.json();
+                        return {
+                            id: loginResult.user._id,
+                            name: loginResult.user.fullName,
+                            email: loginResult.user.email,
+                            image: profile.avatar_url,
+                            role: loginResult.user.role || "user",
+                            isVerified: true, // GitHub users are verified
+                            backendToken: loginResult.token,
+                        };
+                    }
+                } catch (error) {
+                    console.error('GitHub auth error:', error);
                 }
+
+                // Fallback if API calls fail
+                return {
+                    id: profile.id.toString(),
+                    name: profile.name || profile.login,
+                    email: profile.email,
+                    image: profile.avatar_url,
+                    role: "user",
+                    isVerified: true,
+                };
             },
-            // assertion (as type) is telling TS that you know better.
             clientId: process.env.GITHUB_CLIENT_ID as string,
             clientSecret: process.env.GITHUB_CLIENT_SECRET as string,
         }),
@@ -91,11 +148,15 @@ const options: NextAuthOptions = {
         signIn: '/login',
     },
     callbacks: {
-        async jwt({ token, user }) {
+        async jwt({ token, user, account }) {
             if(user) {
                 token.role = user.role;
                 token.isVerified = user.isVerified;
                 token.backendToken = user.backendToken;
+            }
+            // Track the provider used for login
+            if(account) {
+                token.provider = account.provider;
             }
             return token;
         },
@@ -104,8 +165,19 @@ const options: NextAuthOptions = {
                 session.user.role = token.role;
                 session.user.isVerified = token.isVerified;
                 session.user.backendToken = token.backendToken;
+                session.user.provider = token.provider;
             }
             return session;
+        },
+        async redirect({ url, baseUrl }) {
+            // GitHub users and verified users go to dashboard
+            if (url.includes('github') || url.includes('dashboard')) {
+                return `${baseUrl}/dashboard`;
+            }
+            // Default redirect for other cases
+            if (url.startsWith("/")) return `${baseUrl}${url}`;
+            if (new URL(url).origin === baseUrl) return url;
+            return `${baseUrl}/dashboard`;
         }
     }
 }

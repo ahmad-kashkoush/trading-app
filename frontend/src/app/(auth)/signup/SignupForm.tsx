@@ -95,7 +95,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSuccess, onError }) => {
   const handleGitHubSignup = async () => {
     setIsLoading(true);
     try {
-      await signIn('github', { callbackUrl: '/' });
+      await signIn('github', { callbackUrl: '/dashboard' });
     } catch (err) {
       setError('GitHub signup failed');
       onError?.('GitHub signup failed');

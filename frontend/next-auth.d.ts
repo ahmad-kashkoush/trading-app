@@ -10,6 +10,7 @@ declare module "next-auth" {
             role: string;
             isVerified?: boolean;
             backendToken?: string;
+            provider?: string;
             id: string;
             name?: string | null;
             email?: string | null;
@@ -27,5 +28,6 @@ declare module "next-auth/jwt" {
         role: string;
         isVerified?: boolean;
         backendToken?: string;
+        provider?: string;
     }
 }

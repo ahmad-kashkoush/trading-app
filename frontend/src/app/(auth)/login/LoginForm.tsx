@@ -72,7 +72,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, onError }) => {
   const handleGitHubLogin = async () => {
     setIsLoading(true);
     try {
-      await signIn('github', { callbackUrl: '/' });
+      await signIn('github', { callbackUrl: '/dashboard' });
     } catch (err) {
       setError('GitHub login failed');
       onError?.('GitHub login failed');
