@@ -81,7 +81,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSuccess, onError }) => {
       if(result.token){
         saveTokenToCookie(result.token);
       }
-      router.push('/'); // Redirect to home page
+      router.push('/verify-email'); // Redirect to verify email page
 
     } catch (err) {
       const errorMessage = 'An error occurred during signup';

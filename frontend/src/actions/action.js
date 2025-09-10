@@ -39,7 +39,7 @@ export const signup = async (formData) => {
 
 export const verifyEmail = async (code , token) => {
   try {
-    const response = await axios.post(
+    const response = await axios.put(
       "http://localhost:5000/api/user/verify-email",
       { code },
       {
@@ -63,6 +63,36 @@ export const verifyEmail = async (code , token) => {
       throw new Error("Network error: Unable to connect to server");
     } else {
       throw new Error(`Email verification failed: ${error.message}`);
+    }
+  }
+};
+
+export const resendVerificationCode = async (token) => {
+  try {
+    const response = await axios.post(
+      "http://localhost:5000/api/user/resend-verification",
+      {},
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error("Resend verification code error:", error);
+    if (error.response) {
+      throw new Error(
+        `Resend verification failed: ${
+          error.response.data?.message || error.response.statusText
+        }`
+      );
+    } else if (error.request) {
+      throw new Error("Network error: Unable to connect to server");
+    } else {
+      throw new Error(`Resend verification failed: ${error.message}`);
     }
   }
 };
