@@ -8,6 +8,8 @@ declare module "next-auth" {
     interface Session {
         user: {
             role: string;
+            isVerified?: boolean;
+            backendToken?: string;
             id: string;
             name?: string | null;
             email?: string | null;
@@ -16,10 +18,14 @@ declare module "next-auth" {
     }
     interface User extends DefaultUser{
         role: string;
+        isVerified?: boolean;
+        backendToken?: string;
     }
 }
 declare module "next-auth/jwt" {
     interface JWT extends DefaultJWT {
         role: string;
+        isVerified?: boolean;
+        backendToken?: string;
     }
 }
