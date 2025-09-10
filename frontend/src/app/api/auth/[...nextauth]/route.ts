@@ -19,6 +19,34 @@ const options: NextAuthOptions = {
             clientSecret: process.env.GITHUB_CLIENT_SECRET as string,
         }),
         CredentialsProvider({
+            id: "post-verification", 
+            name: "Post Verification",
+            credentials: {
+                token: { label: "Token", type: "text" },
+                userData: { label: "User Data", type: "text" }
+            },
+            async authorize(credentials) {
+                try {
+                    if (credentials?.token && credentials?.userData) {
+                        const userData = JSON.parse(credentials.userData);
+                        
+                        return {
+                            id: userData._id,
+                            name: userData.fullName,
+                            email: userData.email,
+                            role: userData.role || "user",
+                            isVerified: true,
+                            backendToken: credentials.token,
+                        };
+                    }
+                    return null;
+                } catch (error) {
+                    console.error("Post-verification auth error:", error);
+                    return null;
+                }
+            }
+        }),
+        CredentialsProvider({
             name: "Credentials",
             credentials: { // Form fields
                 username: { label: "Username:", type: "text", placeholder: "trade-username" },

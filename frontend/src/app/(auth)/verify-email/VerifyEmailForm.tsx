@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { verifyEmail, resendVerificationCode } from '@/actions/action';
 import { useRouter } from 'next/navigation';
+import { signIn } from 'next-auth/react';
 import { TextField, Box, Typography, Alert, CircularProgress } from '@mui/material';
 import ThemeButton from '@/components/ui/Button';
 import { getTokenFromCookie, saveTokenToCookie } from '@/utils';
@@ -79,12 +80,25 @@ const VerifyEmailForm: React.FC<VerifyEmailFormProps> = ({ onSuccess, onError })
       const result = await verifyEmail(formData.code, token);
       console.log('Verification result:', result);
       
-      if (result.token) {
+      if (result.token && result.existingUser) {
         saveTokenToCookie(result.token);
+        
+        // Sign in the user with NextAuth using the post-verification provider
+        const signInResult = await signIn('post-verification', {
+          token: result.token,
+          userData: JSON.stringify(result.existingUser),
+          redirect: false
+        });
+        
+        if (signInResult?.ok) {
+          onSuccess?.();
+          router.push('/dashboard'); // Redirect to dashboard after successful sign-in
+        } else {
+          setError('Failed to sign in after verification');
+        }
+      } else {
+        setError('Verification succeeded but sign-in failed');
       }
-      
-      onSuccess?.();
-      router.push('/dashboard'); // Redirect to dashboard after successful verification
     } catch (err: any) {
       const errorMessage = err.message || 'An error occurred during email verification';
       setError(errorMessage);
