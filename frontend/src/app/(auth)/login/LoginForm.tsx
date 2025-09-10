@@ -13,8 +13,8 @@ interface LoginFormProps {
 
 const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, onError }) => {
   const [formData, setFormData] = useState({
-    username: '',
-    password: '',
+    username: 'user-to-pass',
+    password: '123',
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
@@ -39,7 +39,8 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, onError }) => {
       const result = await signIn('credentials', {
         username: formData.username,
         password: formData.password,
-        redirect: false,
+        redirect: true,
+        callbackUrl: '/dashboard',
       });
 
       if (result?.error) {

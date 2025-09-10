@@ -21,8 +21,8 @@ const options: NextAuthOptions = {
         CredentialsProvider({
             name: "Credentials",
             credentials: { // Form fields
-                username: { label: "Username:", type: "text", placeholder: "trade-username" },
-                password: { label: "Password:", type: "password" },
+                username: { label: "Username:", type: "text", placeholder: "trade-username", value:"user-to-pass" },
+                password: { label: "Password:", type: "password", value:"123" },
             },
             async authorize(credentials) {
                 // left for now
@@ -40,6 +40,9 @@ const options: NextAuthOptions = {
     }),
        
     ],
+    pages: {
+        signIn: '/login',
+    },
     callbacks: {
         async jwt({ token, user }) {
             if(user) {
