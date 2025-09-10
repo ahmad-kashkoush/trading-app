@@ -20,16 +20,16 @@ const Signup = async (req, res) => {
   try {
     // 1. Validate input
     console.log(req.body);
-    const { email, firstName, lastName, password } = req.body;
+    const { email, fullName, password } = req.body;
+    console.log(req.body)
     if (
       !email ||
-      !firstName ||
-      !lastName ||
+      !fullName ||
       !password ||
       !isValidEmail(email)
     ) {
       return res.status(400).json({
-        message: "Invalid or missing email, firstName, lastName, or password",
+        message: "Invalid or missing email, f, lastName, or password",
       });
     }
     // 2. Check if user already exists
@@ -44,15 +44,14 @@ const Signup = async (req, res) => {
     const hashCode = crypto.createHash("sha256").update(code).digest("hex");
     // 4. Create new user with verification code and expiry
     const newUser = new User({
-      firstName,
-      lastName,
+      fullName,
       email,
       password,
       verifiedCode: hashCode,
       expireVerifyCode: Date.now() + 10 * 60 * 1000, // 10 minutes expiry
     });
     // 5. Prepare email content
-    const message = `Hi ${firstName},\nWe sent your verification code from Trading App. Your code is: ${code}\nPlease enter this code on the website to verify your email.`;
+    const message = `Hi ${fullName},\nWe sent your verification code from Trading App. Your code is: ${code}\nPlease enter this code on the website to verify your email.`;
     // 6. Send verification email
     try {
       await sendEmailCode({
