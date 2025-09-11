@@ -52,7 +52,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ onError }) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validateForm()) {
       return;
     }
@@ -77,13 +77,13 @@ const SignupForm: React.FC<SignupFormProps> = ({ onError }) => {
       //   router.push('/'); // Redirect to home page
       // }
       const result = await signup(formData);
-      if(result.token){
+      if (result.token) {
         saveTokenToCookie(result.token);
       }
       router.push('/verify-email'); // Redirect to verify email page
 
-    } catch {
-      const errorMessage = 'An error occurred during signup';
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'An error occurred during signup';
       setError(errorMessage);
       onError?.(errorMessage);
     } finally {

@@ -1,12 +1,12 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { verifyEmail, resendVerificationCode } from '@/actions/action';
 import { useRouter } from 'next/navigation';
 import { signIn } from 'next-auth/react';
 import { TextField, Box, Typography, Alert, CircularProgress } from '@mui/material';
 import ThemeButton from '@/components/ui/Button';
-import { getTokenFromCookie, saveTokenToCookie } from '@/utils';
+import { apiAuth } from '@/services';
+import { getTokenFromCookie } from '@/utils';
 
 interface VerifyEmailFormProps {
   onSuccess?: () => void;
@@ -16,26 +16,35 @@ interface VerifyEmailFormProps {
 const VerifyEmailForm: React.FC<VerifyEmailFormProps> = ({ onSuccess, onError }) => {
   const [formData, setFormData] = useState({
     code: '',
+    email: '', // Add email field for when token is missing
   });
   const [isLoading, setIsLoading] = useState(false);
+  const [isCheckingToken, setIsCheckingToken] = useState(true);
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const [token, setToken] = useState<string | null>(null);
+  const [showEmailInput, setShowEmailInput] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
-    // Get token from cookie when component mounts
-    const userToken = getTokenFromCookie('userToken');
-    if (!userToken) {
-      setError('No authentication token found. Please sign up first.');
-      // Redirect to signup if no token
-      setTimeout(() => {
-        router.push('/signup');
-      }, 3000);
-    } else {
-      setToken(userToken);
-    }
-  }, [router]);
+    // Add a small delay to prevent immediate error flash
+    const checkToken = async () => {
+      // Give a moment for the DOM to render
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
+      const userToken = getTokenFromCookie('userToken');
+      if (!userToken) {
+        setError('Your session has expired or token was deleted.');
+        setShowEmailInput(true);
+      } else {
+        setToken(userToken);
+      }
+      
+      setIsCheckingToken(false);
+    };
+
+    checkToken();
+  }, []); // Remove router dependency
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -77,11 +86,11 @@ const VerifyEmailForm: React.FC<VerifyEmailFormProps> = ({ onSuccess, onError })
     setSuccessMessage('');
 
     try {
-      const result = await verifyEmail(formData.code, token);
+      const result = await apiAuth.verifyEmail(formData.code, token);
       console.log('Verification result:', result);
       
       if (result.token && result.existingUser) {
-        saveTokenToCookie(result.token);
+        // Token is already saved by apiAuth
         
         // Sign in the user with NextAuth using the post-verification provider
         const signInResult = await signIn('post-verification', {
@@ -119,8 +128,20 @@ const VerifyEmailForm: React.FC<VerifyEmailFormProps> = ({ onSuccess, onError })
     setSuccessMessage('');
 
     try {
-      const result = await resendVerificationCode(token);
+      const result = await apiAuth.resendVerificationCode(token);
       console.log('Resend result:', result);
+      
+      // If backend provided a new token (when user ID mismatch is resolved), update it
+      if (result.newToken) {
+        console.log('Received new token, updating...');
+        setToken(result.newToken);
+        // Save the new token to cookie
+        if (typeof window !== 'undefined') {
+          const { saveTokenToCookie } = await import('@/utils');
+          saveTokenToCookie(result.newToken);
+        }
+      }
+      
       // Show success message
       setSuccessMessage('New verification code sent to your email!');
     } catch (error: unknown) {
@@ -130,6 +151,32 @@ const VerifyEmailForm: React.FC<VerifyEmailFormProps> = ({ onSuccess, onError })
       setIsLoading(false);
     }
   };
+
+  // Show loading state while checking token
+  if (isCheckingToken) {
+    return (
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: 2,
+          width: '100%',
+          maxWidth: 400,
+          mx: 'auto',
+          p: 3,
+        }}
+      >
+        <Typography variant="h4" component="h1" textAlign="center" gutterBottom>
+          Email Verification
+        </Typography>
+        <CircularProgress size={24} />
+        <Typography variant="body2" color="rgba(255,255,255,0.7)">
+          Loading...
+        </Typography>
+      </Box>
+    );
+  }
 
   // Don't render form if no token
   if (!token) {
@@ -149,8 +196,17 @@ const VerifyEmailForm: React.FC<VerifyEmailFormProps> = ({ onSuccess, onError })
           Email Verification
         </Typography>
         <Alert severity="error">
-          No authentication token found. Redirecting to signup...
+          Your session has expired. Please sign up again to receive a new verification code. Redirecting in 5 seconds...
         </Alert>
+        
+        <ThemeButton
+          variant="signup"
+          fullWidth
+          onClick={() => router.push('/signup')}
+          sx={{ mt: 2 }}
+        >
+          Go to Signup Now
+        </ThemeButton>
       </Box>
     );
   }

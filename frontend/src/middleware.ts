@@ -6,12 +6,16 @@ export default withAuth(
     const { pathname } = req.nextUrl;
     const token = req.nextauth.token;
     
-    // If user is authenticated and accessing auth pages, redirect to dashboard
+    // If user is authenticated and accessing auth pages
     if (token && (pathname === "/login" || pathname === "/signup")) {
       const isVerified = token.isVerified || token.provider === "github";
       if (isVerified) {
+        // Only redirect verified users to dashboard
         return NextResponse.redirect(new URL("/dashboard", req.url));
-      } else {
+      }
+      // Allow unverified users to access signup page (in case they want to use different email)
+      // Only redirect unverified users from login page to verify-email
+      if (pathname === "/login") {
         return NextResponse.redirect(new URL("/verify-email", req.url));
       }
     }
