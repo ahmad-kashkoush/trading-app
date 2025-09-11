@@ -75,8 +75,8 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, onError }) => {
 
     try {
       const result = await signIn('credentials', {
-        username: 'demo',
-        password: 'demo123',
+        username: process.env.NEXT_PUBLIC_DEMO_USERNAME || 'demo',
+        password: process.env.NEXT_PUBLIC_DEMO_PASSWORD || 'demo123',
         redirect: false, // Handle redirect manually
       });
 

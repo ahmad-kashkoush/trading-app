@@ -1,5 +1,6 @@
 const express = require("express");
 const dotenv = require("dotenv");
+const cors = require("cors");
 const connectDB = require("./utils/db");
 const userRoutes = require("./routes/user.routes");
 
@@ -10,6 +11,19 @@ dotenv.config();
 
 // Connect to MongoDB
 connectDB(); // Ensure this returns a Promise or handle connection errors
+
+// CORS configuration
+app.use(cors({
+  origin: [
+    "http://localhost:3000", // Next.js default port
+    "http://localhost:3001", // Alternative frontend port
+    "http://127.0.0.1:3000",
+    "http://127.0.0.1:3001"
+  ],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 
 // Middleware to parse JSON bodies
 app.use(express.json());

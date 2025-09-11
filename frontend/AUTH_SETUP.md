@@ -39,9 +39,11 @@ GITHUB_CLIENT_SECRET=your-github-client-secret
 ## Usage
 
 ### Testing Credentials
-For development, you can use these test credentials:
-- Username: `user-to-pass`
-- Password: `123`
+For development, you can use demo login functionality by setting up environment variables in your `.env.local` file:
+```env
+DEMO_USERNAME=your-demo-username
+DEMO_PASSWORD=your-demo-password
+```
 
 ### GitHub OAuth Setup
 1. Go to GitHub Settings > Developer settings > OAuth Apps

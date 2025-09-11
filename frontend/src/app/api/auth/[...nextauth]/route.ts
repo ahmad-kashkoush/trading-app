@@ -106,13 +106,16 @@ const options: NextAuthOptions = {
         CredentialsProvider({
             name: "Credentials",
             credentials: { // Form fields
-                username: { label: "Username:", type: "text", placeholder: "trade-username", value:"user-to-pass" },
-                password: { label: "Password:", type: "password", value:"123" },
+                username: { label: "Username:", type: "text", placeholder: "your-username" },
+                password: { label: "Password:", type: "password" },
             },
             async authorize(credentials) {
                 try {
                     // Handle demo login specially
-                    if (credentials?.username === 'demo' && credentials?.password === 'demo123') {
+                    const demoUsername = process.env.DEMO_USERNAME || 'demo';
+                    const demoPassword = process.env.DEMO_PASSWORD || 'demo123';
+                    
+                    if (credentials?.username === demoUsername && credentials?.password === demoPassword) {
                         return {
                             id: 'demo_user_id',
                             name: 'Demo User',

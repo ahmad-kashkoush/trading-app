@@ -119,14 +119,20 @@ const VerifyEmail = async (req, res) => {
 // todo: refactor
 const ResendVerificationCode = async (req, res) => {
   try {
+    console.log("🔄 ResendVerificationCode called for user:", req.user._id);
+    
     // 1. Check if user exists and is authenticated
     const existingUser = await User.findById(req.user._id);
     if (!existingUser) {
+      console.log("❌ User not found:", req.user._id);
       return res.status(404).json({ message: "User not found" });
     }
 
+    console.log("✅ User found:", existingUser.email);
+
     // 2. Check if user is already verified
     if (existingUser.isVerified) {
+      console.log("ℹ️ User is already verified");
       return res.status(400).json({ message: "Email is already verified" });
     }
 
@@ -134,12 +140,31 @@ const ResendVerificationCode = async (req, res) => {
     const code = Math.floor(100000 + Math.random() * 900000).toString();
     const hashCode = crypto.createHash("sha256").update(code).digest("hex");
 
+    console.log("🔢 Generated verification code for:", existingUser.email);
+
     // 4. Update user with new verification code and expiry
     existingUser.verifiedCode = hashCode;
     existingUser.expireVerifyCode = Date.now() + 10 * 60 * 1000; // 10 minutes expiry
 
-    // 5. Prepare email content
-    const message = `Hi ${existingUser.fullName},\nWe sent your new verification code from Trading App. Your code is: ${code}\nPlease enter this code on the website to verify your email.`;
+    // 5. Prepare email content with timestamp to avoid deduplication
+    const timestamp = new Date().toLocaleString();
+    const message = `Hi ${existingUser.fullName},
+
+This is a RESEND of your verification code from Trading App.
+
+Your new verification code is: ${code}
+
+This code will expire in 10 minutes.
+Requested at: ${timestamp}
+
+Please enter this code on the website to verify your email.
+
+If you didn't request this code, please ignore this email.
+
+Best regards,
+Trading App Team`;
+
+    console.log("📧 About to send email to:", existingUser.email);
 
     // 6. Send verification email
     try {
@@ -148,24 +173,26 @@ const ResendVerificationCode = async (req, res) => {
         subject: "New Email Verification Code",
         message,
       });
+      console.log("✅ Email sent successfully!");
     } catch (error) {
-      console.error("Email sending failed:", error);
+      console.error("❌ Email sending failed:", error);
       return res
         .status(500)
-        .json({ message: "Failed to send verification email" });
+        .json({ message: "Failed to send verification email: " + error.message });
     }
 
     // 7. Save updated user to database
     await existingUser.save();
+    console.log("💾 User updated in database");
 
     // 8. Send success response
     return res.status(200).json({ 
       message: "New verification code sent to your email" 
     });
   } catch (error) {
-    console.error("Resend verification code error:", error);
+    console.error("❌ Resend verification code error:", error);
     return res.status(500).json({ 
-      message: "Server error during resending verification code" 
+      message: "Server error during resending verification code: " + error.message 
     });
   }
 };

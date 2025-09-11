@@ -265,7 +265,7 @@ const VerifyEmailForm: React.FC<VerifyEmailFormProps> = ({ onSuccess, onError })
               },
             }}
           >
-            Sign up again
+        Sign up again
           </Typography>
         </Typography>
       </Box>
