@@ -15,7 +15,7 @@ const options: NextAuthOptions = {
                     };
 
                     // Step 1: Try login first (if email already exists)
-                    let loginResponse = await fetch("http://localhost:5000/api/user/login", {
+                    let loginResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/user/login`, {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({
@@ -26,7 +26,7 @@ const options: NextAuthOptions = {
 
                     // Step 2: If login fails, do signup
                     if (!loginResponse.ok) {
-                        const signupResponse = await fetch("http://localhost:5000/api/user/signup", {
+                        const signupResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/user/signup`, {
                             method: "POST",
                             headers: { "Content-Type": "application/json" },
                             body: JSON.stringify(githubData),
@@ -34,7 +34,7 @@ const options: NextAuthOptions = {
 
                         if (signupResponse.ok) {
                             // Step 3: Login after successful signup
-                            loginResponse = await fetch("http://localhost:5000/api/user/login", {
+                            loginResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/user/login`, {
                                 method: "POST",
                                 headers: { "Content-Type": "application/json" },
                                 body: JSON.stringify({
@@ -124,7 +124,7 @@ const options: NextAuthOptions = {
                     }
 
                     // Call our backend login API
-                    const response = await fetch("http://localhost:5000/api/user/login", {
+                    const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/user/login`, {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json",

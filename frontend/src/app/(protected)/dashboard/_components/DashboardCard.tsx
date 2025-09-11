@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, CardContent, Typography, Box, Chip, Avatar } from '@mui/material';
+import { Card, CardContent, Typography, Box, Avatar } from '@mui/material';
 import { COLORS, borderRadius, spacingValues } from '@/styles/theme';
 
 interface DashboardCardProps {

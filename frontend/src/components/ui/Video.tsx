@@ -140,6 +140,13 @@ const VideoComponent: React.FC<VideoComponentProps> = ({
                 Your browser does not support the video tag.
             </motion.video>
 
+            {/* Loading State */}
+            {isLoading && (
+                <div className="absolute inset-0 flex items-center justify-center bg-black/20">
+                    <div className="w-8 h-8 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                </div>
+            )}
+
             {/* Last Frame Thumbnail */}
             {isEnded && showLastFrame && lastFrameUrl && (
                 <motion.img

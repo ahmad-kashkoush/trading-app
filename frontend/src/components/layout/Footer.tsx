@@ -211,17 +211,6 @@ function FooterLinks({ footerLinks }: FooterLinksProps) {
 
 // Social Links
 function SocialLinks({ socialLinks }: SocialLinksProps) {
-    const itemVariants = {
-        hidden: { opacity: 0, y: 20 },
-        visible: {
-            opacity: 1,
-            y: 0,
-            transition: {
-                duration: 0.6,
-            },
-        },
-    };
-
     return (
         <div className="flex space-x-4">
             {socialLinks.map((social, index) => (

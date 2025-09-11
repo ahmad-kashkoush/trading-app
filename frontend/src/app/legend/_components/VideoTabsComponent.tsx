@@ -11,7 +11,7 @@ interface TabData {
     heading: string;
     description: string;
     videoSrc: string;
-    icon: React.ComponentType<any>;
+    icon: React.ComponentType<{ className?: string }>;
 }
 
 const tabsData: TabData[] = [
@@ -119,7 +119,7 @@ const VideoTabsComponent: React.FC = () => {
 
                 {/* Tabs Navigation */}
                 <div className="flex gap-6 justify-center mt-8">
-                    {tabsData.map((tab, index) => (
+                    {tabsData.map((tab) => (
                         <motion.div
                             key={tab.id}
                             onClick={() => handleTabClick(tab.id)}

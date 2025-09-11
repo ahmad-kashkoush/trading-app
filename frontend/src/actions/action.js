@@ -1,11 +1,10 @@
 "use server";
 import axios from "axios";
-import { redirect } from "next/navigation";
 
 export const signup = async (formData) => {
   try {
     const response = await axios.post(
-      "http://localhost:5000/api/user/signup",
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/user/signup`,
       {
         fullName: formData.username,
         email: formData.email,
@@ -40,7 +39,7 @@ export const signup = async (formData) => {
 export const verifyEmail = async (code , token) => {
   try {
     const response = await axios.put(
-      "http://localhost:5000/api/user/verify-email",
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/user/verify-email`,
       { code },
       {
         headers: {
@@ -70,7 +69,7 @@ export const verifyEmail = async (code , token) => {
 export const resendVerificationCode = async (token) => {
   try {
     const response = await axios.post(
-      "http://localhost:5000/api/user/resend-verification",
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/user/resend-verification`,
       {},
       {
         headers: {

@@ -46,7 +46,7 @@ function SectionLayout1(): JSX.Element {
             <motion.div variants={animationVariants.slideUp}>
                 <h1 className={`${typography.serif} ${typography.heading.hero} ${typography.colors.white} bg-gradient-to-br from-white via-gray-100 to-[${COLORS.ACCENT_HEX}] bg-clip-text text-transparent mb-4`}>
                     Strategy that works harder.
-                    So you don't have to.
+                    So you don&apos;t have to.
                 </h1>
             </motion.div>
 

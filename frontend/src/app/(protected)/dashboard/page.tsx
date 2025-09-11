@@ -22,7 +22,8 @@ import RoleBadge from './_components/RoleBadge';
 
 export default function DashboardPage() {
   const { data: session } = useSession();
-  const isDesktop = useMediaQuery(BREAKPOINTS.DESKTOP);
+  // const isDesktop = useMediaQuery(BREAKPOINTS.DESKTOP);
+  
   const isTablet = useMediaQuery(BREAKPOINTS.TABLET);
 
   const userDisplayName = session?.user?.name || session?.user?.email || 'User';

@@ -99,8 +99,8 @@ const VerifyEmailForm: React.FC<VerifyEmailFormProps> = ({ onSuccess, onError })
       } else {
         setError('Verification succeeded but sign-in failed');
       }
-    } catch (err: any) {
-      const errorMessage = err.message || 'An error occurred during email verification';
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'An error occurred during email verification';
       setError(errorMessage);
       onError?.(errorMessage);
     } finally {
@@ -123,8 +123,8 @@ const VerifyEmailForm: React.FC<VerifyEmailFormProps> = ({ onSuccess, onError })
       console.log('Resend result:', result);
       // Show success message
       setSuccessMessage('New verification code sent to your email!');
-    } catch (err: any) {
-      const errorMessage = err.message || 'Failed to resend verification code';
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to resend verification code';
       setError(errorMessage);
     } finally {
       setIsLoading(false);
@@ -174,7 +174,7 @@ const VerifyEmailForm: React.FC<VerifyEmailFormProps> = ({ onSuccess, onError })
       </Typography>
 
       <Typography variant="body1" textAlign="center" color="rgba(255,255,255,0.7)" sx={{ mb: 2 }}>
-        We've sent a 6-digit verification code to your email address. Please enter it below to verify your account.
+        We&apos;ve sent a 6-digit verification code to your email address. Please enter it below to verify your account.
       </Typography>
 
       {error && (
@@ -237,7 +237,7 @@ const VerifyEmailForm: React.FC<VerifyEmailFormProps> = ({ onSuccess, onError })
 
       <Box sx={{ textAlign: 'center', my: 2 }}>
         <Typography variant="body2" color="rgba(255,255,255,0.7)">
-          Didn't receive the code?
+          Didn&apos;t receive the code?
         </Typography>
       </Box>
 

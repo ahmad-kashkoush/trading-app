@@ -1,5 +1,5 @@
 // Function to save a token to cookies
-function saveTokenToCookie(token, name = "userToken", days = 7) {
+function saveTokenToCookie(token: string, name = "userToken", days = 7) {
   const date = new Date();
   date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
   const expires = "expires=" + date.toUTCString();
@@ -7,7 +7,7 @@ function saveTokenToCookie(token, name = "userToken", days = 7) {
 }
 
 // Function to get a token from cookies
-function getTokenFromCookie(name = "authToken") {
+function getTokenFromCookie(name = "authToken"): string | null {
   const cookieName = name + "=";
   const decodedCookie = decodeURIComponent(document.cookie);
   const cookieArray = decodedCookie.split(";");

@@ -1,19 +1,19 @@
 'use client';
 
-import React, { useState } from 'react';
-import { signIn } from 'next-auth/react';
 import { signup } from '@/actions/action';
-import { useRouter } from 'next/navigation';
-import { TextField, Box, Typography, Alert, CircularProgress } from '@mui/material';
 import ThemeButton from '@/components/ui/Button';
 import { saveTokenToCookie } from '@/utils';
+import { Alert, Box, CircularProgress, TextField, Typography } from '@mui/material';
+import { signIn } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+import React, { useState } from 'react';
 
 interface SignupFormProps {
   onSuccess?: () => void;
   onError?: (error: string) => void;
 }
 
-const SignupForm: React.FC<SignupFormProps> = ({ onSuccess, onError }) => {
+const SignupForm: React.FC<SignupFormProps> = ({ onError }) => {
   const [formData, setFormData] = useState({
     username: '',
     email: '',
@@ -77,13 +77,12 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSuccess, onError }) => {
       //   router.push('/'); // Redirect to home page
       // }
       const result = await signup(formData);
-      console.log(result)
       if(result.token){
         saveTokenToCookie(result.token);
       }
       router.push('/verify-email'); // Redirect to verify email page
 
-    } catch (err) {
+    } catch {
       const errorMessage = 'An error occurred during signup';
       setError(errorMessage);
       onError?.(errorMessage);
@@ -96,7 +95,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSuccess, onError }) => {
     setIsLoading(true);
     try {
       await signIn('github', { callbackUrl: '/dashboard' });
-    } catch (err) {
+    } catch {
       setError('GitHub signup failed');
       onError?.('GitHub signup failed');
     } finally {

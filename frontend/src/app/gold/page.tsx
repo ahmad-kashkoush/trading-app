@@ -172,7 +172,7 @@ function SectionLayout3() {
 
                 {/* Description */}
                 <p className={`${typography.phonic} ${typography.body.large} ${typography.colors.gray} max-w-3xl mx-auto mb-4`}>
-                    You contribute, we boost. Get a 3% match on annual contributions. That's $210 when maxing out your 2025 IRA contribution limit.
+                    You contribute, we boost. Get a 3% match on annual contributions. That&apos;s $210 when maxing out your 2025 IRA contribution limit.
                 </p>
 
                 {/* Disclosure with popup */}
@@ -218,7 +218,7 @@ function SectionLayout4() {
             {/* Section Header with SectionLayout3 style */}
             <motion.div variants={animationVariants.slideUp} className={`${spacing.section} text-center mb-12`}>
                 <h2 className={`${typography.serif} ${typography.heading.large} ${typography.colors.goldFaded} max-w-3xl mx-auto`}>
-                    Maximize your money's potential.
+                    Maximize your money&apos;s potential.
                 </h2>
             </motion.div>
 
