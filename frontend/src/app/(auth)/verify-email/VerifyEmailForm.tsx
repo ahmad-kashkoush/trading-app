@@ -23,7 +23,7 @@ const VerifyEmailForm: React.FC<VerifyEmailFormProps> = ({ onSuccess, onError })
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const [token, setToken] = useState<string | null>(null);
-  const [showEmailInput, setShowEmailInput] = useState(false);
+  const [, setShowEmailInput] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -131,18 +131,8 @@ const VerifyEmailForm: React.FC<VerifyEmailFormProps> = ({ onSuccess, onError })
       const result = await apiAuth.resendVerificationCode(token);
       console.log('Resend result:', result);
       
-      // If backend provided a new token (when user ID mismatch is resolved), update it
-      if (result.newToken) {
-        console.log('Received new token, updating...');
-        setToken(result.newToken);
-        // Save the new token to cookie
-        if (typeof window !== 'undefined') {
-          const { saveTokenToCookie } = await import('@/utils');
-          saveTokenToCookie(result.newToken);
-        }
-      }
-      
       // Show success message
+      setSuccessMessage('Verification code resent successfully!');
       setSuccessMessage('New verification code sent to your email!');
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : 'Failed to resend verification code';

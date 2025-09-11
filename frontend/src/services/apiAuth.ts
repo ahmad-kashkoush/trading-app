@@ -1,6 +1,15 @@
 /**
  * Simple API & Auth client for Trading App
- * All HTTP requests and authentication using axios
+ * All HTTP requ  githubAuth: async (userData: { email: string; fullName: string; password: string }) => {
+    try {
+      // Try login first
+      return await apiAuth.login({ email: userData.email, password: userData.password });
+    } catch {
+      // If login fails, signup then login
+      await axiosInstance.post('/api/user/signup', userData);
+      return await apiAuth.login({ email: userData.email, password: userData.password });
+    }
+  },uthentication using axios
  */
 
 import axios from 'axios';
@@ -66,7 +75,7 @@ export const apiAuth = {
     try {
       // Try login first
       return await apiAuth.login({ email: userData.email, password: userData.password });
-    } catch (error) {
+    } catch{
       // If login fails, signup then login
       await axiosInstance.post('/api/user/signup', userData);
       return await apiAuth.login({ email: userData.email, password: userData.password });
@@ -116,14 +125,14 @@ export const apiAuth = {
     return response.data;
   },
 
-  post: async <T>(endpoint: string, data?: any, token?: string) => {
+  post: async <T>(endpoint: string, data?: unknown, token?: string) => {
     const response = await axiosInstance.post<T>(endpoint, data, {
       headers: token ? { Authorization: `Bearer ${token}` } : {},
     });
     return response.data;
   },
 
-  put: async <T>(endpoint: string, data?: any, token?: string) => {
+  put: async <T>(endpoint: string, data?: unknown, token?: string) => {
     const response = await axiosInstance.put<T>(endpoint, data, {
       headers: token ? { Authorization: `Bearer ${token}` } : {},
     });
