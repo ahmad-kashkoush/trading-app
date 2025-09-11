@@ -2,9 +2,11 @@
 
 import React, { useState } from 'react';
 import { signIn } from 'next-auth/react';
+import { signup } from '@/actions/action';
 import { useRouter } from 'next/navigation';
 import { TextField, Box, Typography, Alert, CircularProgress } from '@mui/material';
 import ThemeButton from '@/components/ui/Button';
+import { saveTokenToCookie } from '@/utils';
 
 interface SignupFormProps {
   onSuccess?: () => void;
@@ -61,19 +63,26 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSuccess, onError }) => {
     try {
       // For now, we'll simulate a signup by creating a user and then signing them in
       // In a real app, you'd make an API call to create the user first
-      const result = await signIn('credentials', {
-        username: formData.username,
-        password: formData.password,
-        redirect: false,
-      });
+      // const result = await signIn('credentials', {
+      //   username: formData.username,
+      //   password: formData.password,
+      //   redirect: false,
+      // });
 
-      if (result?.error) {
-        setError('Failed to create account. Please try again.');
-        onError?.('Failed to create account. Please try again.');
-      } else if (result?.ok) {
-        onSuccess?.();
-        router.push('/'); // Redirect to home page
+      // if (result?.error) {
+      //   setError('Failed to create account. Please try again.');
+      //   onError?.('Failed to create account. Please try again.');
+      // } else if (result?.ok) {
+      //   onSuccess?.();
+      //   router.push('/'); // Redirect to home page
+      // }
+      const result = await signup(formData);
+      console.log(result)
+      if(result.token){
+        saveTokenToCookie(result.token);
       }
+      router.push('/verify-email'); // Redirect to verify email page
+
     } catch (err) {
       const errorMessage = 'An error occurred during signup';
       setError(errorMessage);
@@ -86,7 +95,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSuccess, onError }) => {
   const handleGitHubSignup = async () => {
     setIsLoading(true);
     try {
-      await signIn('github', { callbackUrl: '/' });
+      await signIn('github', { callbackUrl: '/dashboard' });
     } catch (err) {
       setError('GitHub signup failed');
       onError?.('GitHub signup failed');

@@ -20,16 +20,16 @@ const Signup = async (req, res) => {
   try {
     // 1. Validate input
     console.log(req.body);
-    const { email, firstName, lastName, password } = req.body;
+    const { email, fullName, password } = req.body;
+    console.log(req.body)
     if (
       !email ||
-      !firstName ||
-      !lastName ||
+      !fullName ||
       !password ||
       !isValidEmail(email)
     ) {
       return res.status(400).json({
-        message: "Invalid or missing email, firstName, lastName, or password",
+        message: "Invalid or missing email, f, lastName, or password",
       });
     }
     // 2. Check if user already exists
@@ -44,15 +44,14 @@ const Signup = async (req, res) => {
     const hashCode = crypto.createHash("sha256").update(code).digest("hex");
     // 4. Create new user with verification code and expiry
     const newUser = new User({
-      firstName,
-      lastName,
+      fullName,
       email,
       password,
       verifiedCode: hashCode,
       expireVerifyCode: Date.now() + 10 * 60 * 1000, // 10 minutes expiry
     });
     // 5. Prepare email content
-    const message = `Hi ${firstName},\nWe sent your verification code from Trading App. Your code is: ${code}\nPlease enter this code on the website to verify your email.`;
+    const message = `Hi ${fullName},\nWe sent your verification code from Trading App. Your code is: ${code}\nPlease enter this code on the website to verify your email.`;
     // 6. Send verification email
     try {
       await sendEmailCode({
@@ -78,5 +77,238 @@ const Signup = async (req, res) => {
     return res.status(500).json({ message: "Server error during signup" });
   }
 };
+const VerifyEmail = async (req, res) => {
+  try {
+    const { code } = req.body;
+    if (!code) {
+      return res.status(400).json({ message: "Verification code is required" });
+    }
+    // 1. Check if user exists
+    const existingUser = await User.findById(req.user._id);
+    if (!existingUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    // 2. Check if code matches and is not expired
+    const hashCode = crypto.createHash("sha256").update(code).digest("hex");
+    if (
+      existingUser.verifiedCode !== hashCode ||
+      existingUser.expireVerifyCode < Date.now()
+    ) {
+      return res.status(400).json({ message: "Invalid or expired code" });
+    }
+    // 3. Update user to mark as verified
+    existingUser.isVerified = true;
+    existingUser.verifiedCode = undefined; // Clear verification code
+    existingUser.expireVerifyCode = undefined; // Clear expiry
+    await existingUser.save();
+    // 4. Generate JWT token
+    const token = generateTOken(existingUser._id);
+    // 5. Send success response
+    return res.status(200).json({
+      message: "Email verified successfully",
+      token,
+      existingUser,
+    });
+  } catch (error) {
+    console.error("Email verification error:", error);
+    return res
+      .status(500)
+      .json({ message: "Server error during email verification" });
+  }
+};
+// todo: refactor
+const ResendVerificationCode = async (req, res) => {
+  try {
+    // 1. Check if user exists and is authenticated
+    const existingUser = await User.findById(req.user._id);
+    if (!existingUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
 
-module.exports = { Signup };
+    // 2. Check if user is already verified
+    if (existingUser.isVerified) {
+      return res.status(400).json({ message: "Email is already verified" });
+    }
+
+    // 3. Generate new 6-digit verification code
+    const code = Math.floor(100000 + Math.random() * 900000).toString();
+    const hashCode = crypto.createHash("sha256").update(code).digest("hex");
+
+    // 4. Update user with new verification code and expiry
+    existingUser.verifiedCode = hashCode;
+    existingUser.expireVerifyCode = Date.now() + 10 * 60 * 1000; // 10 minutes expiry
+
+    // 5. Prepare email content
+    const message = `Hi ${existingUser.fullName},\nWe sent your new verification code from Trading App. Your code is: ${code}\nPlease enter this code on the website to verify your email.`;
+
+    // 6. Send verification email
+    try {
+      await sendEmailCode({
+        email: existingUser.email,
+        subject: "New Email Verification Code",
+        message,
+      });
+    } catch (error) {
+      console.error("Email sending failed:", error);
+      return res
+        .status(500)
+        .json({ message: "Failed to send verification email" });
+    }
+
+    // 7. Save updated user to database
+    await existingUser.save();
+
+    // 8. Send success response
+    return res.status(200).json({ 
+      message: "New verification code sent to your email" 
+    });
+  } catch (error) {
+    console.error("Resend verification code error:", error);
+    return res.status(500).json({ 
+      message: "Server error during resending verification code" 
+    });
+  }
+};
+const Login = async (req, res) => {
+  // Implement login logic here
+  const { email, password } = req.body;
+  if (!email || !password) {
+    return res.status(400).json({ message: "Email and password are required" });
+  }
+  const user = await User.findOne({
+    password: password,
+    email: email,
+  });
+  if (!user) {
+    return res.status(404).json({ message: "Email Or Password is incorrect" });
+  }
+
+  res.status(200).json({
+    message: "Login successful",
+    token: generateTOken(user._id),
+    user,
+  });
+};
+
+const ForgetPassword = async (req, res) => {
+  const { email } = req.body;
+  if (!email || !isValidEmail(email)) {
+    return res.status(400).json({ message: "Invalid email address" });
+  }
+  const user = await User.findOne({ email });
+  if (!user) {
+    return res.status(404).json({ message: "User not found" });
+  }
+  // 3. Generate 6-digit verification code
+  const code = Math.floor(100000 + Math.random() * 900000).toString();
+  const hashCode = crypto.createHash("sha256").update(code).digest("hex");
+
+  // Send reset email
+  user.resetCode = hashCode;
+  user.resetCodeExpiry = Date.now() + 10 * 60 * 1000; // 10 minutes expiry
+  const message = `Hi ${email},\nWe sent your verification code from Trading App. Your code is: ${code}\nPlease enter this code on the website to verify your email.`;
+
+  await user.save();
+  try {
+    await sendEmailCode({
+      email: user.email,
+      subject: "Password Reset Request",
+      message,
+    });
+    return res.status(200).json({
+      message: "Reset code sent to  email successfully",
+      token: generateTOken(user._id),
+    });
+  } catch (error) {
+    console.error("Error sending reset email:", error);
+    return res.status(500).json({ message: "Failed to send reset email" });
+  }
+};
+const ResetPasswordCode = async (req, res) => {
+  const { code } = req.body;
+  if (!code) {
+    return res
+      .status(400)
+      .json({ message: "Code and new password are required" });
+  }
+  // 1. Check if user exists
+  const existingUser = await User.findById(req.user._id);
+  if (!existingUser) {
+    return res.status(404).json({ message: "User not found" });
+  }
+  // 2. Check if code matches and is not expired
+  const hashCode = crypto.createHash("sha256").update(code).digest("hex");
+  if (
+    existingUser.resetCode !== hashCode ||
+    existingUser.resetCodeExpiry < Date.now()
+  ) {
+    return res.status(400).json({ message: "Invalid or expired code" });
+  }
+  // 3. Update user
+  existingUser.resetCode = undefined; // Clear reset code
+  existingUser.resetCodeExpiry = undefined; // Clear expiry
+  await existingUser.save();
+  // 4. Send success response
+  return res.status(200).json({ message: "code submitted successfully" });
+};
+
+const resetPassword = async (req, res) => {
+  const { password } = req.body;
+  if (!password) {
+    return res.status(400).json({ message: "New password is required" });
+  }
+  // 1. Check if user exists
+  const existingUser = await User.findById(req.user._id);
+  if (!existingUser) {
+    return res.status(404).json({ message: "User not found" });
+  }
+  // 2. Update password
+  existingUser.password = password; // Assuming password is already hashed
+  await existingUser.save();
+  // 3. Send success response
+  return res.status(200).json({
+    message: "Password reset successfully",
+    token: generateTOken(existingUser._id),
+  });
+};
+
+const getAllUsers = async (req, res) => {
+  try {
+    const users = await User.find();
+    res.status(200).json(users);
+  } catch (error) {
+    console.error("Error fetching users:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+const ProtectedRoute = async (req, res, next) => {
+  try {
+    let token = "";
+    if (
+      req.headers.authorization &&
+      req.headers.authorization.startsWith("Bearer")
+    ) {
+      token = req.headers.authorization.split(" ")[1];
+    }
+    if (!token) {
+      return res.status(401).json({ message: "Unauthorized, token missing" });
+    }
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = decoded;
+    next();
+  } catch (error) {
+    console.error("Protected route error:", error);
+    return res.status(401).json({ message: "Unauthorized, invalid token" });
+  }
+};
+module.exports = {
+  Signup,
+  VerifyEmail,
+  ResendVerificationCode,
+  ProtectedRoute,
+  Login,
+  ForgetPassword,
+  ResetPasswordCode,
+  resetPassword,
+  getAllUsers
+};

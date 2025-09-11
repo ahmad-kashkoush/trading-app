@@ -13,8 +13,8 @@ interface LoginFormProps {
 
 const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, onError }) => {
   const [formData, setFormData] = useState({
-    username: '',
-    password: '',
+    username: 'user-to-pass',
+    password: '123',
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
@@ -39,7 +39,8 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, onError }) => {
       const result = await signIn('credentials', {
         username: formData.username,
         password: formData.password,
-        redirect: false,
+        redirect: true,
+        callbackUrl: '/dashboard',
       });
 
       if (result?.error) {
@@ -49,8 +50,14 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, onError }) => {
         // Get the session to verify login
         const session = await getSession();
         if (session) {
-          onSuccess?.();
-          router.push('/'); // Redirect to home page
+          // Check if user is verified
+          if (session.user.isVerified) {
+            onSuccess?.();
+            router.push('/dashboard'); // Redirect to dashboard if verified
+          } else {
+            // User is not verified, redirect to verification page
+            router.push('/verify-email');
+          }
         }
       }
     } catch (err) {
@@ -62,10 +69,41 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, onError }) => {
     }
   };
 
+  const handleDemoLogin = async () => {
+    setIsLoading(true);
+    setError('');
+
+    try {
+      const result = await signIn('credentials', {
+        username: 'demo',
+        password: 'demo123',
+        redirect: false, // Handle redirect manually
+      });
+
+      if (result?.error) {
+        setError('Demo login failed');
+        onError?.('Demo login failed');
+      } else if (result?.ok) {
+        // Get the session to verify login
+        const session = await getSession();
+        if (session) {
+          onSuccess?.();
+          router.push('/dashboard'); // Force redirect to dashboard
+        }
+      }
+    } catch (err) {
+      const errorMessage = 'Demo login failed';
+      setError(errorMessage);
+      onError?.(errorMessage);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const handleGitHubLogin = async () => {
     setIsLoading(true);
     try {
-      await signIn('github', { callbackUrl: '/' });
+      await signIn('github', { callbackUrl: '/dashboard' });
     } catch (err) {
       setError('GitHub login failed');
       onError?.('GitHub login failed');
@@ -168,6 +206,16 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, onError }) => {
         sx={{ py: 1.5 }}
       >
         {isLoading ? <CircularProgress size={24} color="inherit" /> : 'Sign In'}
+      </ThemeButton>
+
+      <ThemeButton
+        variant="secondary"
+        fullWidth
+        onClick={handleDemoLogin}
+        disabled={isLoading}
+        sx={{ py: 1.5, backgroundColor: 'rgba(76, 175, 80, 0.1)', '&:hover': { backgroundColor: 'rgba(76, 175, 80, 0.2)' } }}
+      >
+        {isLoading ? <CircularProgress size={24} color="inherit" /> : 'Sign in with Demo'}
       </ThemeButton>
 
       <Box sx={{ textAlign: 'center', my: 2 }}>

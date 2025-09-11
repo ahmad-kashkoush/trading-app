@@ -2,14 +2,11 @@ const mongoose = require("mongoose");
 
 const UserSchema = new mongoose.Schema(
   {
-    firstName: {
+    fullName: {
       type: String,
-      required: [true, "The first name is required"],
+      required: [true, "The full name is required"],
     },
-    lastName: {
-      type: String,
-      required: [true, "The last name is required"],
-    },
+
     slug: {
       type: String,
       lowercase: true,
@@ -43,6 +40,17 @@ const UserSchema = new mongoose.Schema(
     },
     expireVerifyCode: {
       type: Date, // Store expiry time for verification code
+    },
+    // todo refactor
+    isVerified: {
+      type: Boolean,
+      default: false, // Whether email is verified
+    },
+    resetCode: {
+      type: String, // Store hashed reset code for password reset
+    },
+    resetCodeExpiry: {
+      type: Date, // Store expiry time for reset code
     },
   },
   { timestamps: true }
