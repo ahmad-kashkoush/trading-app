@@ -236,6 +236,24 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, onError }) => {
 
       <Box sx={{ textAlign: 'center', mt: 2 }}>
         <Typography variant="body2" color="rgba(255,255,255,0.7)">
+          <Typography
+            component="a"
+            href="/forgot-password"
+            sx={{
+              color: 'var(--accent-color)',
+              textDecoration: 'none',
+              '&:hover': {
+                textDecoration: 'underline',
+              },
+            }}
+          >
+            Forgot your password?
+          </Typography>
+        </Typography>
+      </Box>
+
+      <Box sx={{ textAlign: 'center', mt: 2 }}>
+        <Typography variant="body2" color="rgba(255,255,255,0.7)">
           Don&apos;t have an account?{' '}
           <Typography
             component="a"
