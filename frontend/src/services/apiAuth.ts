@@ -117,6 +117,56 @@ export const apiAuth = {
     return response.data;
   },
 
+  // === Password Reset Functions ===
+  forgotPassword: async (email: string) => {
+    const response = await axiosInstance.post<{ message: string; token: string }>(
+      '/api/user/forgot-password',
+      { email }
+    );
+    
+    // Auto-save token for password reset flow
+    if (typeof window !== 'undefined' && response.data.token) {
+      saveTokenToCookie(response.data.token);
+    }
+    
+    return response.data;
+  },
+
+  resetPasswordCode: async (code: string, token?: string) => {
+    const authToken = token || (typeof window !== 'undefined' ? getTokenFromCookie('userToken') : '');
+    if (!authToken) throw new Error('Authentication token required');
+    
+    const response = await axiosInstance.post<{ message: string }>(
+      '/api/user/reset-password-code',
+      { code },
+      {
+        headers: { Authorization: `Bearer ${authToken}` },
+      }
+    );
+    
+    return response.data;
+  },
+
+  resetPassword: async (password: string, token?: string) => {
+    const authToken = token || (typeof window !== 'undefined' ? getTokenFromCookie('userToken') : '');
+    if (!authToken) throw new Error('Authentication token required');
+    
+    const response = await axiosInstance.put<{ message: string; token: string }>(
+      '/api/user/reset-password',
+      { password },
+      {
+        headers: { Authorization: `Bearer ${authToken}` },
+      }
+    );
+    
+    // Update token after successful password reset
+    if (typeof window !== 'undefined' && response.data.token) {
+      saveTokenToCookie(response.data.token);
+    }
+    
+    return response.data;
+  },
+
   // === Generic HTTP Methods (for future use) ===
   get: async <T>(endpoint: string, token?: string) => {
     const response = await axiosInstance.get<T>(endpoint, {
