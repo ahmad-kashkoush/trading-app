@@ -1,6 +1,7 @@
 "use client"
 import { SectionHeader, SectionLayout } from '@/components/layout';
 import { Image as ImageComponent, Button as ThemeButton } from '@/components/ui';
+import CheckoutButton from '@/components/CheckoutButton';
 import { buttonClasses, cardStyles, COLORS, decorative, gridPatterns, spacing, typography } from '@/styles';
 import { animationVariants, HOVER_ANIMATIONS, VIEWPORT_CONFIG } from '@/styles/animations';
 import { motion } from 'framer-motion';
@@ -64,23 +65,32 @@ function SectionLayout1() {
                 </p>
             </motion.div>
 
-            {/* CTA Button */}
+            {/* CTA Buttons */}
             <motion.div
                 variants={animationVariants.slideUp}
-                whileHover={HOVER_ANIMATIONS.scale}
-                whileTap={HOVER_ANIMATIONS.tap}
-                className={spacing.margins.top.small}
+                className={`${spacing.margins.top.small} flex flex-col sm:flex-row gap-4 items-center justify-center`}
             >
-                <ThemeButton
-                    component={Link}
-                    href='/hood-month'
-                    variant="primary"
-                    className={`${buttonClasses.base} ${buttonClasses.sizes.large} relative overflow-hidden group ${buttonClasses.effects.shadow}`}
+                <motion.div
+                    whileHover={HOVER_ANIMATIONS.scale}
+                    whileTap={HOVER_ANIMATIONS.tap}
                 >
-                    <span className="relative z-10">Explore HOOD Month</span>
-                    {/* Shimmer Effect */}
-                    <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-500 bg-gradient-to-r from-transparent via-white/20 to-transparent" />
-                </ThemeButton>
+                    <ThemeButton
+                        component={Link}
+                        href='/hood-month'
+                        variant="primary"
+                        className={`${buttonClasses.base} ${buttonClasses.sizes.large} relative overflow-hidden group ${buttonClasses.effects.shadow}`}
+                    >
+                        <span className="relative z-10">Explore HOOD Month</span>
+                        {/* Shimmer Effect */}
+                        <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-500 bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+                    </ThemeButton>
+                </motion.div>
+
+                <CheckoutButton 
+                    productName="Premium Trading Access"
+                    amount={2999}
+                    description="Unlock advanced trading features and strategies"
+                />
             </motion.div>
         </SectionLayout>
     );
