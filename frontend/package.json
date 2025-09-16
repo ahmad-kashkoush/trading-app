@@ -13,6 +13,7 @@
     "@emotion/styled": "^11.14.1",
     "@mui/icons-material": "^7.3.2",
     "@mui/material": "^7.3.2",
+    "@stripe/stripe-js": "^7.9.0",
     "axios": "^1.11.0",
     "framer-motion": "^12.23.12",
     "next": "15.4.4",
