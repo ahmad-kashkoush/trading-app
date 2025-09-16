@@ -24,7 +24,6 @@ import {
     Close as CloseIcon,
     ExpandMore as ExpandMoreIcon,
     ExpandLess as ExpandLessIcon,
-    AccountCircle,
 } from '@mui/icons-material';
 import Link from 'next/link';
 import { useSession, signOut } from 'next-auth/react';
@@ -77,8 +76,15 @@ interface AuthButtonsProps {
     onNavClick?: () => void;
 }
 
+interface User {
+    name?: string | null;
+    email?: string | null;
+    image?: string | null;
+    role?: string;
+}
+
 interface UserMenuProps {
-    user: any;
+    user: User;
     isMobile?: boolean;
     onNavClick?: () => void;
 }
@@ -203,7 +209,7 @@ const UserMenu: React.FC<UserMenuProps> = ({ user, isMobile, onNavClick }) => {
             <Box sx={{ mt: 2, px: 2 }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', mb: 2, p: 2, backgroundColor: 'rgba(255,255,255,0.05)', borderRadius: 1 }}>
                     <Avatar 
-                        src={user?.image} 
+                        src={user?.image || undefined} 
                         sx={{ 
                             bgcolor: user?.image ? 'transparent' : 'var(--accent-color)', 
                             color: user?.image ? 'inherit' : 'black', 
@@ -239,7 +245,7 @@ const UserMenu: React.FC<UserMenuProps> = ({ user, isMobile, onNavClick }) => {
                 sx={{ color: 'white' }}
             >
                 <Avatar 
-                    src={user?.image} 
+                    src={user?.image || undefined} 
                     sx={{ 
                         bgcolor: user?.image ? 'transparent' : 'var(--accent-color)', 
                         color: user?.image ? 'inherit' : 'black', 

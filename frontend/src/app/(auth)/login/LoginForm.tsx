@@ -1,10 +1,10 @@
 'use client';
 
-import React, { useState } from 'react';
-import { signIn, getSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
-import { Box, Typography, Alert, CircularProgress, TextField } from '@mui/material';
 import ThemeButton from '@/components/ui/Button';
+import { Alert, Box, CircularProgress, TextField, Typography } from '@mui/material';
+import { getSession, signIn } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+import React, { useState } from 'react';
 
 interface LoginFormProps {
   onSuccess?: () => void;
@@ -13,8 +13,8 @@ interface LoginFormProps {
 
 const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, onError }) => {
   const [formData, setFormData] = useState({
-    username: 'user-to-pass',
-    password: '123',
+    username: '',
+    password: '',
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
@@ -60,7 +60,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, onError }) => {
           }
         }
       }
-    } catch (err) {
+    } catch {
       const errorMessage = 'An error occurred during login';
       setError(errorMessage);
       onError?.(errorMessage);
@@ -75,8 +75,8 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, onError }) => {
 
     try {
       const result = await signIn('credentials', {
-        username: 'demo',
-        password: 'demo123',
+        username: process.env.NEXT_PUBLIC_DEMO_USERNAME || 'demo',
+        password: process.env.NEXT_PUBLIC_DEMO_PASSWORD || 'demo123',
         redirect: false, // Handle redirect manually
       });
 
@@ -91,7 +91,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, onError }) => {
           router.push('/dashboard'); // Force redirect to dashboard
         }
       }
-    } catch (err) {
+    } catch {
       const errorMessage = 'Demo login failed';
       setError(errorMessage);
       onError?.(errorMessage);
@@ -104,7 +104,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, onError }) => {
     setIsLoading(true);
     try {
       await signIn('github', { callbackUrl: '/dashboard' });
-    } catch (err) {
+    } catch {
       setError('GitHub login failed');
       onError?.('GitHub login failed');
     } finally {
@@ -236,7 +236,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, onError }) => {
 
       <Box sx={{ textAlign: 'center', mt: 2 }}>
         <Typography variant="body2" color="rgba(255,255,255,0.7)">
-          Don't have an account?{' '}
+          Don&apos;t have an account?{' '}
           <Typography
             component="a"
             href="/signup"

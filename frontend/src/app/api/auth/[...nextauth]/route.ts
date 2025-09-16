@@ -2,6 +2,7 @@ import NextAuth, { NextAuthOptions } from "next-auth";
 import GithubProvider from "next-auth/providers/github";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { GithubProfile } from "next-auth/providers/github";
+import { apiAuth } from '@/services';
 const options: NextAuthOptions = {
     providers: [
         GithubProvider({
@@ -9,55 +10,28 @@ const options: NextAuthOptions = {
                 try {
                     // Map GitHub profile to database fields
                     const githubData = {
-                        email: profile.email,
+                        email: profile.email || '',
                         fullName: profile.name || profile.login,
                         password: `github_${profile.id}_temp`, // Temporary password for GitHub users
                     };
 
-                    // Step 1: Try login first (if email already exists)
-                    let loginResponse = await fetch("http://localhost:5000/api/user/login", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({
-                            email: githubData.email,
-                            password: githubData.password,
-                        }),
-                    });
-
-                    // Step 2: If login fails, do signup
-                    if (!loginResponse.ok) {
-                        const signupResponse = await fetch("http://localhost:5000/api/user/signup", {
-                            method: "POST",
-                            headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify(githubData),
-                        });
-
-                        if (signupResponse.ok) {
-                            // Step 3: Login after successful signup
-                            loginResponse = await fetch("http://localhost:5000/api/user/login", {
-                                method: "POST",
-                                headers: { "Content-Type": "application/json" },
-                                body: JSON.stringify({
-                                    email: githubData.email,
-                                    password: githubData.password,
-                                }),
-                            });
-                        }
+                    // Skip if email is not available
+                    if (!profile.email) {
+                        throw new Error('GitHub profile email is required');
                     }
 
-                    // Step 4: Return user data from login
-                    if (loginResponse.ok) {
-                        const loginResult = await loginResponse.json();
-                        return {
-                            id: loginResult.user._id,
-                            name: loginResult.user.fullName,
-                            email: loginResult.user.email,
-                            image: profile.avatar_url,
-                            role: loginResult.user.role || "user",
-                            isVerified: true, // GitHub users are verified
-                            backendToken: loginResult.token,
-                        };
-                    }
+                    // Use auth service for GitHub authentication
+                    const loginResult = await apiAuth.githubAuth(githubData);
+
+                    return {
+                        id: loginResult.user._id,
+                        name: loginResult.user.fullName,
+                        email: loginResult.user.email,
+                        image: profile.avatar_url,
+                        role: loginResult.user.role || "user",
+                        isVerified: true, // GitHub users are verified
+                        backendToken: loginResult.token,
+                    };
                 } catch (error) {
                     console.error('GitHub auth error:', error);
                 }
@@ -106,13 +80,16 @@ const options: NextAuthOptions = {
         CredentialsProvider({
             name: "Credentials",
             credentials: { // Form fields
-                username: { label: "Username:", type: "text", placeholder: "trade-username", value:"user-to-pass" },
-                password: { label: "Password:", type: "password", value:"123" },
+                username: { label: "Username:", type: "text", placeholder: "your-username" },
+                password: { label: "Password:", type: "password" },
             },
             async authorize(credentials) {
                 try {
                     // Handle demo login specially
-                    if (credentials?.username === 'demo' && credentials?.password === 'demo123') {
+                    const demoUsername = process.env.DEMO_USERNAME || 'demo';
+                    const demoPassword = process.env.DEMO_PASSWORD || 'demo123';
+                    
+                    if (credentials?.username === demoUsername && credentials?.password === demoPassword) {
                         return {
                             id: 'demo_user_id',
                             name: 'Demo User',
@@ -123,20 +100,13 @@ const options: NextAuthOptions = {
                         };
                     }
 
-                    // Call our backend login API
-                    const response = await fetch("http://localhost:5000/api/user/login", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify({
-                            email: credentials?.username,
-                            password: credentials?.password,
-                        }),
-                    });
+                    // Call our backend login API using auth service
+                    if (credentials?.username && credentials?.password) {
+                        const result = await apiAuth.login({
+                            email: credentials.username,
+                            password: credentials.password,
+                        });
 
-                    if (response.ok) {
-                        const result = await response.json();
                         // Return user object that will be saved in JWT
                         return {
                             id: result.user._id,
@@ -156,6 +126,7 @@ const options: NextAuthOptions = {
         }),
        
     ],
+    secret: process.env.NEXTAUTH_SECRET,
     pages: {
         signIn: '/login',
     },

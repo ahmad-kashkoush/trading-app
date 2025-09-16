@@ -1,12 +1,12 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { verifyEmail, resendVerificationCode } from '@/actions/action';
 import { useRouter } from 'next/navigation';
 import { signIn } from 'next-auth/react';
 import { TextField, Box, Typography, Alert, CircularProgress } from '@mui/material';
 import ThemeButton from '@/components/ui/Button';
-import { getTokenFromCookie, saveTokenToCookie } from '@/utils';
+import { apiAuth } from '@/services';
+import { getTokenFromCookie } from '@/utils';
 
 interface VerifyEmailFormProps {
   onSuccess?: () => void;
@@ -16,26 +16,35 @@ interface VerifyEmailFormProps {
 const VerifyEmailForm: React.FC<VerifyEmailFormProps> = ({ onSuccess, onError }) => {
   const [formData, setFormData] = useState({
     code: '',
+    email: '', // Add email field for when token is missing
   });
   const [isLoading, setIsLoading] = useState(false);
+  const [isCheckingToken, setIsCheckingToken] = useState(true);
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const [token, setToken] = useState<string | null>(null);
+  const [, setShowEmailInput] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
-    // Get token from cookie when component mounts
-    const userToken = getTokenFromCookie('userToken');
-    if (!userToken) {
-      setError('No authentication token found. Please sign up first.');
-      // Redirect to signup if no token
-      setTimeout(() => {
-        router.push('/signup');
-      }, 3000);
-    } else {
-      setToken(userToken);
-    }
-  }, [router]);
+    // Add a small delay to prevent immediate error flash
+    const checkToken = async () => {
+      // Give a moment for the DOM to render
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
+      const userToken = getTokenFromCookie('userToken');
+      if (!userToken) {
+        setError('Your session has expired or token was deleted.');
+        setShowEmailInput(true);
+      } else {
+        setToken(userToken);
+      }
+      
+      setIsCheckingToken(false);
+    };
+
+    checkToken();
+  }, []); // Remove router dependency
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -77,11 +86,11 @@ const VerifyEmailForm: React.FC<VerifyEmailFormProps> = ({ onSuccess, onError })
     setSuccessMessage('');
 
     try {
-      const result = await verifyEmail(formData.code, token);
+      const result = await apiAuth.verifyEmail(formData.code, token);
       console.log('Verification result:', result);
       
       if (result.token && result.existingUser) {
-        saveTokenToCookie(result.token);
+        // Token is already saved by apiAuth
         
         // Sign in the user with NextAuth using the post-verification provider
         const signInResult = await signIn('post-verification', {
@@ -99,8 +108,8 @@ const VerifyEmailForm: React.FC<VerifyEmailFormProps> = ({ onSuccess, onError })
       } else {
         setError('Verification succeeded but sign-in failed');
       }
-    } catch (err: any) {
-      const errorMessage = err.message || 'An error occurred during email verification';
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'An error occurred during email verification';
       setError(errorMessage);
       onError?.(errorMessage);
     } finally {
@@ -119,17 +128,45 @@ const VerifyEmailForm: React.FC<VerifyEmailFormProps> = ({ onSuccess, onError })
     setSuccessMessage('');
 
     try {
-      const result = await resendVerificationCode(token);
+      const result = await apiAuth.resendVerificationCode(token);
       console.log('Resend result:', result);
+      
       // Show success message
+      setSuccessMessage('Verification code resent successfully!');
       setSuccessMessage('New verification code sent to your email!');
-    } catch (err: any) {
-      const errorMessage = err.message || 'Failed to resend verification code';
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to resend verification code';
       setError(errorMessage);
     } finally {
       setIsLoading(false);
     }
   };
+
+  // Show loading state while checking token
+  if (isCheckingToken) {
+    return (
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: 2,
+          width: '100%',
+          maxWidth: 400,
+          mx: 'auto',
+          p: 3,
+        }}
+      >
+        <Typography variant="h4" component="h1" textAlign="center" gutterBottom>
+          Email Verification
+        </Typography>
+        <CircularProgress size={24} />
+        <Typography variant="body2" color="rgba(255,255,255,0.7)">
+          Loading...
+        </Typography>
+      </Box>
+    );
+  }
 
   // Don't render form if no token
   if (!token) {
@@ -149,8 +186,17 @@ const VerifyEmailForm: React.FC<VerifyEmailFormProps> = ({ onSuccess, onError })
           Email Verification
         </Typography>
         <Alert severity="error">
-          No authentication token found. Redirecting to signup...
+          Your session has expired. Please sign up again to receive a new verification code. Redirecting in 5 seconds...
         </Alert>
+        
+        <ThemeButton
+          variant="signup"
+          fullWidth
+          onClick={() => router.push('/signup')}
+          sx={{ mt: 2 }}
+        >
+          Go to Signup Now
+        </ThemeButton>
       </Box>
     );
   }
@@ -174,7 +220,7 @@ const VerifyEmailForm: React.FC<VerifyEmailFormProps> = ({ onSuccess, onError })
       </Typography>
 
       <Typography variant="body1" textAlign="center" color="rgba(255,255,255,0.7)" sx={{ mb: 2 }}>
-        We've sent a 6-digit verification code to your email address. Please enter it below to verify your account.
+        We&apos;ve sent a 6-digit verification code to your email address. Please enter it below to verify your account.
       </Typography>
 
       {error && (
@@ -237,7 +283,7 @@ const VerifyEmailForm: React.FC<VerifyEmailFormProps> = ({ onSuccess, onError })
 
       <Box sx={{ textAlign: 'center', my: 2 }}>
         <Typography variant="body2" color="rgba(255,255,255,0.7)">
-          Didn't receive the code?
+          Didn&apos;t receive the code?
         </Typography>
       </Box>
 
@@ -265,7 +311,7 @@ const VerifyEmailForm: React.FC<VerifyEmailFormProps> = ({ onSuccess, onError })
               },
             }}
           >
-            Sign up again
+        Sign up again
           </Typography>
         </Typography>
       </Box>
