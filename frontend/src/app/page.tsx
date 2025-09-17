@@ -1,7 +1,6 @@
 "use client"
 import { SectionHeader, SectionLayout } from '@/components/layout';
 import { Image as ImageComponent, Button as ThemeButton } from '@/components/ui';
-import CheckoutButton from '@/components/CheckoutButton';
 import { buttonClasses, cardStyles, COLORS, decorative, gridPatterns, spacing, typography } from '@/styles';
 import { animationVariants, HOVER_ANIMATIONS, VIEWPORT_CONFIG } from '@/styles/animations';
 import { motion } from 'framer-motion';
@@ -70,27 +69,41 @@ function SectionLayout1() {
                 variants={animationVariants.slideUp}
                 className={`${spacing.margins.top.small} flex flex-col sm:flex-row gap-4 items-center justify-center`}
             >
-                <motion.div
-                    whileHover={HOVER_ANIMATIONS.scale}
-                    whileTap={HOVER_ANIMATIONS.tap}
-                >
-                    <ThemeButton
-                        component={Link}
-                        href='/hood-month'
-                        variant="primary"
-                        className={`${buttonClasses.base} ${buttonClasses.sizes.large} relative overflow-hidden group ${buttonClasses.effects.shadow}`}
-                    >
-                        <span className="relative z-10">Explore HOOD Month</span>
-                        {/* Shimmer Effect */}
-                        <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-500 bg-gradient-to-r from-transparent via-white/20 to-transparent" />
-                    </ThemeButton>
-                </motion.div>
+                <div
 
-                <CheckoutButton 
-                    productName="Premium Trading Access"
-                    amount={2999}
-                    description="Unlock advanced trading features and strategies"
-                />
+                    className="flex flex-col sm:flex-row gap-6 items-center justify-center"
+                >
+                    <motion.div
+                        whileHover={HOVER_ANIMATIONS.scale}
+                        whileTap={HOVER_ANIMATIONS.tap}
+                    >
+                        <ThemeButton
+                            component={Link}
+                            href='/hood-month'
+                            variant="primary"
+                            className={`${buttonClasses.base} ${buttonClasses.sizes.large} relative overflow-hidden group ${buttonClasses.effects.shadow}`}
+                        >
+                            <span className="relative z-10">Explore HOOD Month</span>
+                            {/* Shimmer Effect */}
+                            <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-500 bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+                        </ThemeButton>
+                    </motion.div>
+                    <motion.div
+                        whileHover={HOVER_ANIMATIONS.scale}
+                        whileTap={HOVER_ANIMATIONS.tap}
+                    >
+                        <ThemeButton
+                            component={Link}
+                            href='/checkout'
+                            variant="secondary"
+                            className={`${buttonClasses.base} ${buttonClasses.sizes.large} relative overflow-hidden group ${buttonClasses.effects.shadow}`}
+                        >
+                            <span className="relative z-10">Check our Subscriptions</span>
+                            {/* Shimmer Effect */}
+                            <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-500 bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+                        </ThemeButton>
+                    </motion.div>
+                </div>
             </motion.div>
         </SectionLayout>
     );
@@ -388,13 +401,13 @@ function SectionLayout5() {
                             Robinhood Protection Guarantee
                         </h2>
                         <p className={`${typography.body.large} ${typography.colors.whiteOpacity} ${spacing.maxWidth.text}`}
-                           style={{ fontFamily: 'Phonic, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif' }}>
+                            style={{ fontFamily: 'Phonic, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif' }}>
                             Your security is our priority. We employ multiple layers of protection to safeguard your investments and personal information.
                         </p>
                     </motion.div>
 
                     {/* Features Grid - 2 columns, 4 features - Firefox Compatible */}
-                    <motion.div 
+                    <motion.div
                         variants={animationVariants.slideUp}
                         className={`${gridPatterns.features} ${spacing.margins.top.large}`}
                     >
@@ -433,8 +446,8 @@ function SectionLayout5() {
                     <motion.div variants={animationVariants.slideUp} className={spacing.margins.top.large}>
                         <div className={`${cardStyles.base} ${cardStyles.paddingLarge} ${spacing.maxWidth.medium}`}>
                             <p className={`${typography.phonic} ${typography.body.medium} ${typography.colors.whiteOpacityLow}`}>
-                                <strong className={typography.colors.white}>Important:</strong> Robinhood Financial LLC is a member of SIPC, which protects securities customers 
-                                of its members up to $500,000 (including $250,000 for claims for cash). 
+                                <strong className={typography.colors.white}>Important:</strong> Robinhood Financial LLC is a member of SIPC, which protects securities customers
+                                of its members up to $500,000 (including $250,000 for claims for cash).
                                 An explanatory brochure is available upon request or at{' '}
                                 <span className={typography.colors.accent}>www.sipc.org</span>.
                             </p>
