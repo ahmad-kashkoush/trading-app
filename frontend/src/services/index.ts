@@ -1,9 +1,5 @@
-/**
- * Services exports
- * Everything in one simple apiAuth module
- */
-
 export * from './apiAuth';
-
-// Main export - everything you need
+export { default as apiPayment } from './apiPayment';
+export { default as apiSubscription } from './apiSubscription';
+export { getStripe } from './stripeClient';
 export { apiAuth } from './apiAuth';
