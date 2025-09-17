@@ -3,7 +3,8 @@ const dotenv = require("dotenv");
 const cors = require("cors");
 const connectDB = require("./utils/db");
 const userRoutes = require("./routes/user.routes");
-
+const paymentRoutes = require("./routes/payment.routes");
+const connectStripe = require("./utils/stripe");
 const app = express();
 
 // Load environment variables
@@ -11,6 +12,9 @@ dotenv.config();
 
 // Connect to MongoDB
 connectDB(); // Ensure this returns a Promise or handle connection errors
+
+// Connect to Stripe
+const stripe = connectStripe();
 
 // CORS configuration
 app.use(cors({
@@ -30,6 +34,7 @@ app.use(express.json());
 
 // Routes
 app.use("/api/user", userRoutes);
+app.use("/api/payment", paymentRoutes);
 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
