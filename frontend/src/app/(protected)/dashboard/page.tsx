@@ -19,6 +19,7 @@ import { COLORS, BREAKPOINTS, spacingValues } from '@/styles/theme';
 import ThemeButton from '@/components/ui/Button';
 import DashboardCard from './_components/DashboardCard';
 import RoleBadge from './_components/RoleBadge';
+import SubscriptionStatus from './_components/SubscriptionStatus';
 
 export default function DashboardPage() {
   const { data: session } = useSession();
@@ -145,24 +146,33 @@ export default function DashboardPage() {
           </DashboardCard>
 
           {/* Quick Actions Card */}
+                    {/* Quick Actions Card */}
           <DashboardCard
             title="Quick Actions"
-            subtitle="Common tasks and shortcuts"
+            subtitle="Common tasks and settings"
             icon={<SettingsIcon />}
-            variant="success"
+            variant="accent"
           >
-            <Box sx={{ mt: 2, display: 'flex', flexDirection: 'column', gap: 1 }}>
+            <Box sx={{ mt: 2, display: 'flex', flexDirection: 'column', gap: 1.5 }}>
               <ThemeButton variant="primary" size="small" fullWidth>
-                View Trading Dashboard
+                Update Profile
               </ThemeButton>
               <ThemeButton variant="secondary" size="small" fullWidth>
-                Account Settings
+                Security Settings
               </ThemeButton>
-              <ThemeButton variant="base" size="small" fullWidth>
-                Help & Support
+              <ThemeButton variant="secondary" size="small" fullWidth>
+                Download Data
               </ThemeButton>
             </Box>
           </DashboardCard>
+
+          {/* Subscription Status Card */}
+          <Box sx={{ gridColumn: { xs: '1', lg: '1 / -1' } }}>
+            <SubscriptionStatus 
+              userId={session?.user?.id} 
+              userEmail={session?.user?.email || 'guest'} 
+            />
+          </Box>
         </Box>
 
         {/* Stats Overview - Full Width */}
