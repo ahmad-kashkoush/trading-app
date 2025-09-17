@@ -2,55 +2,16 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
+import { useSession } from "next-auth/react";
 import { CheckoutButton } from '@/components';
+import TestCardInfo from './_components/TestCardInfo';
 import { SectionLayout, SectionHeader } from '@/components/layout';
 import { typography, spacing, buttonClasses, HOVER_ANIMATIONS } from '@/styles';
-
-// Product options for the checkout
-const PRODUCTS = [
-  {
-    id: 'basic',
-    name: 'Basic Trading Package',
-    price: 2999, // $29.99
-    description: 'Essential trading tools and basic analytics',
-    features: [
-      'Real-time market data',
-      'Basic charting tools',
-      'Email alerts',
-      'Mobile app access'
-    ]
-  },
-  {
-    id: 'premium',
-    name: 'Premium Trading Package',
-    price: 4999, // $49.99
-    description: 'Advanced trading tools with premium features',
-    features: [
-      'Everything in Basic',
-      'Advanced analytics',
-      'Custom indicators',
-      'Priority support',
-      'API access'
-    ],
-    popular: true
-  },
-  {
-    id: 'pro',
-    name: 'Professional Trading Package',
-    price: 9999, // $99.99
-    description: 'Complete trading suite for professionals',
-    features: [
-      'Everything in Premium',
-      'AI-powered insights',
-      'Unlimited alerts',
-      'White-label solutions',
-      'Dedicated account manager'
-    ]
-  }
-];
+import { TRADING_PACKAGES, formatPrice } from '@/utils/packages';
 
 export default function CheckoutPage() {
-  const [selectedProduct, setSelectedProduct] = useState(PRODUCTS[1]); // Default to Premium
+  const [selectedProduct, setSelectedProduct] = useState(TRADING_PACKAGES[1]); // Default to Premium
+  const { data: session } = useSession();
 
   return (
     <SectionLayout 
@@ -68,7 +29,7 @@ export default function CheckoutPage() {
 
         {/* Product Cards Grid */}
         <div className="grid md:grid-cols-3 gap-6 mb-12">
-          {PRODUCTS.map((product, index) => (
+          {TRADING_PACKAGES.map((product, index) => (
             <motion.div
               key={product.id}
               initial={{ opacity: 0, y: 20 }}
@@ -100,8 +61,8 @@ export default function CheckoutPage() {
                   {product.description}
                 </p>
                 <div className="text-3xl font-bold text-[var(--accent-color)]">
-                  ${(product.price / 100).toFixed(2)}
-                  <span className="text-sm text-gray-400 ml-1">/ month</span>
+                  {formatPrice(product.price)}
+                  <span className="text-sm text-gray-400 ml-1">for 30 days</span>
                 </div>
               </div>
 
@@ -131,17 +92,17 @@ export default function CheckoutPage() {
           <div className="border-b border-gray-800 pb-4 mb-4">
             <div className="flex justify-between items-start mb-2">
               <span className={typography.body.medium}>{selectedProduct.name}</span>
-              <span className="font-semibold">${(selectedProduct.price / 100).toFixed(2)}</span>
+              <span className="font-semibold">{formatPrice(selectedProduct.price)}</span>
             </div>
             <p className={`${typography.body.small} ${typography.colors.grayLight}`}>
-              {selectedProduct.description}
+              {selectedProduct.description} • One-time payment for 30 days
             </p>
           </div>
 
           <div className="flex justify-between items-center mb-6">
-            <span className={`${typography.body.medium} font-semibold`}>Total</span>
+            <span className={`${typography.body.medium} font-semibold`}>Total (one-time)</span>
             <span className="text-xl font-bold text-[var(--accent-color)]">
-              ${(selectedProduct.price / 100).toFixed(2)}
+              {formatPrice(selectedProduct.price)}
             </span>
           </div>
 
@@ -149,8 +110,14 @@ export default function CheckoutPage() {
             productName={selectedProduct.name}
             amount={selectedProduct.price}
             description={selectedProduct.description}
+            customerEmail={session?.user?.email || undefined}
+            userId={session?.user?.id || undefined}
             className="w-full"
+            showTestInfo={false} // Don't show compact version here
           />
+
+          {/* Full Test Card Information */}
+          <TestCardInfo className="mt-4" />
 
           <p className={`${typography.body.small} ${typography.colors.grayLight} text-center mt-4`}>
             Secure payment powered by Stripe. Cancel anytime.

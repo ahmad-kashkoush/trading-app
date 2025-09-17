@@ -4,15 +4,15 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5
 
 const axiosInstance = axios.create({
   baseURL: API_BASE_URL,
-  headers: {
-    "Content-Type": "application/json",
-  },
+  headers: { "Content-Type": "application/json" },
 });
 
 export interface PaymentData {
   name: string;
   description?: string;
   amount: number; // in cents
+  customerEmail?: string;
+  userId?: string;
 }
 
 export interface CheckoutSessionResponse {
@@ -34,27 +34,16 @@ export interface SessionVerification {
 }
 
 const apiPayment = {
-  // Create checkout session
-  createCheckoutSession: async (
-    priceData: PaymentData,
-    successUrl?: string,
-    cancelUrl?: string
-  ): Promise<CheckoutSessionResponse> => {
-    const response = await axiosInstance.post("/api/payment/create-checkout-session", {
-      priceData,
-      successUrl,
-      cancelUrl,
-    });
+  createCheckoutSession: async (priceData: PaymentData, successUrl?: string, cancelUrl?: string): Promise<CheckoutSessionResponse> => {
+    const response = await axiosInstance.post("/api/payment/create-checkout-session", { priceData, successUrl, cancelUrl });
     return response.data;
   },
 
-  // Verify payment session
   verifySession: async (sessionId: string): Promise<SessionVerification> => {
     const response = await axiosInstance.get(`/api/payment/verify-session/${sessionId}`);
     return response.data;
   },
 
-  // Test payment with demo data
   createTestPayment: async (): Promise<CheckoutSessionResponse> => {
     return apiPayment.createCheckoutSession({
       name: "Test Payment",
