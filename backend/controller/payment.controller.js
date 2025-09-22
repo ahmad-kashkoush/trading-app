@@ -38,6 +38,11 @@ const createCheckoutSession = async (req, res) => {
     const session = await stripe.checkout.sessions.create(sessionParams);
 
     // Save basic transaction record
+    /**todo: 
+     * Default email 'pending' could cause issues with email validation later
+     * No rollback mechanism if Stripe session creation succeeds but database save fails
+     * Missing input sanitization on priceData fields which come from user input
+     */
     const transactionData = {
       stripeSessionId: session.id,
       productName: priceData?.name || 'Trading Package',
@@ -77,6 +82,11 @@ const verifySession = async (req, res) => {
     // Get session from Stripe
     const session = await stripe.checkout.sessions.retrieve(sessionId);
     
+    /**todo:
+     * Two separate database queries instead of a single atomic operation creates race condition risk.
+     * Date calculation using millisecond math is error-prone and doesn't account for daylight saving time.
+     * No validation that the payment amount matches what was expected.
+     */
     // Update transaction in database
     if (session.payment_status === 'paid') {
       const transaction = await Transaction.findOne({ stripeSessionId: sessionId });
@@ -126,6 +136,11 @@ const verifySession = async (req, res) => {
 };
 
 // Check if user has active access
+/** todo: 
+ * String comparison userId === 'guest' is fragile - should use constants or enums.
+ * No input sanitization on userId parameter
+ * Missing authentication check - anyone can check any user's access
+ */
 const checkUserAccess = async (req, res) => {
   try {
     const { userId } = req.params;

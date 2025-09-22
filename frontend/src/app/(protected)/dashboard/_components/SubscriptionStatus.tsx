@@ -84,6 +84,11 @@ export default function SubscriptionStatus({ userId, userEmail }: SubscriptionSt
       </div>
 
       {subscription?.hasAccess ? (
+        /**todo:
+         * Using array index as React key can cause rendering issues if packages are reordered
+         * Date formatting doesn't respect user locale preferences
+         * No handling for edge cases like negative days remaining or missing expiration dates
+         */
         <div className="space-y-4">
           {subscription.activePackages.map((pkg, index) => (
             <motion.div
@@ -113,8 +118,12 @@ export default function SubscriptionStatus({ userId, userEmail }: SubscriptionSt
                   )}
                 </div>
               </div>
-              
               {/* Progress bar */}
+              {/**
+               * Math.max(5, ...) arbitrarily sets minimum to 5% - this could be misleading for truly expired subscriptions.
+               * Fallback to 30 days should use same constant as backend rather than hardcoded value.
+               * No accessibility features like aria-label for screen readers.
+               */}
               <div className="mt-3">
                 <div className="w-full bg-gray-200 rounded-full h-2">
                   <div 
