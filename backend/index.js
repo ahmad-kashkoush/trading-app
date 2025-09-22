@@ -4,8 +4,9 @@ const cors = require("cors");
 const connectDB = require("./utils/db");
 const userRoutes = require("./routes/user.routes");
 const paymentRoutes = require("./routes/payment.routes");
+const messagesRoutes = require("./routes/messages.routes");
 const connectStripe = require("./utils/stripe");
-const app = express();
+const { app, server } = require("./utils/socket");
 
 // Load environment variables
 dotenv.config();
@@ -35,8 +36,9 @@ app.use(express.json());
 // Routes
 app.use("/api/user", userRoutes);
 app.use("/api/payment", paymentRoutes);
+app.use("/api/messages", messagesRoutes);
 
 const PORT = process.env.PORT || 4000;
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
