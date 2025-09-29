@@ -46,6 +46,7 @@ const navItems = [
             { label: "Credit Card", link: "/offer/credit-card" },
         ],
     },
+    { label: "Pricing", link: "/plans" },
     { label: "Strategies", link: "/strategies" },
     { label: "Gold", link: "/gold" },
     { label: "Legend", link: "/legend" },
