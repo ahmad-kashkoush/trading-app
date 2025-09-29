@@ -78,4 +78,5 @@ userSubscriptionSchema.methods.isActive = async function () {
     return now.isAfter(dayjs(this.startDate)) && now.isBefore(dayjs(endDate));
 };
 
-module.exports = mongoose.model('UserSubscription', userSubscriptionSchema);
+const UserSubscription= mongoose.model('UserSubscription', userSubscriptionSchema);
+module.exports = UserSubscription;
