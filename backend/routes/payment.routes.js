@@ -1,15 +1,15 @@
 const express = require("express");
 const { 
-  createCheckoutSession, 
-  verifySession 
+    checkout,
+    verify,
 } = require("../controller/payment.controller");
 
 const router = express.Router();
 
 // Create checkout session
-router.post("/create-checkout-session", createCheckoutSession);
+router.post("/checkout", checkout);
 
-// Verify payment session
-router.get("/verify-session/:sessionId", verifySession);
+// Verify payment session: returns session details and either success or failure.
+router.get("/verify-session/:sessionId", verify);
 
 module.exports = router;

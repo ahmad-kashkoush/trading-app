@@ -3,9 +3,9 @@ const dotenv = require("dotenv");
 const cors = require("cors");
 const connectDB = require("./utils/db");
 const userRoutes = require("./routes/user.routes");
-// const paymentRoutes = require("./routes/payment.routes");
+const paymentRoutes = require("./routes/payment.routes");
 const AppError = require("./utils/globalError");
-// const connectStripe = require("./utils/stripe");
+const connectStripe = require("./utils/stripe");
 // const { app, server } = require("./utils/socket");
 const app = express();
 
@@ -16,7 +16,7 @@ dotenv.config();
 connectDB(); // Ensure this returns a Promise or handle connection errors
 
 // Connect to Stripe
-// const stripe = connectStripe();
+const stripe = connectStripe();
 
 // CORS configuration
 app.use(
@@ -38,7 +38,7 @@ app.use(express.json());
 
 // Routes
 app.use("/api/user", userRoutes);
-// app.use("/api/payment", paymentRoutes);
+app.use("/api/payment", paymentRoutes);
 
 app.use((req, res, next) => {
   return next(new AppError("Not Found Route", 404));
