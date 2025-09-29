@@ -8,6 +8,7 @@ const AppError = require("../utils/globalError");
 const checkout = asyncHandler(async (req, res) => {
   const stripe = connectStripe();
   // request body: userId, productId, quantity. 
+  // I can get current userId from getCurrent middleware.
   const { userId, productId, quantity } = req.body;
 
   // Find product by ID from your database
