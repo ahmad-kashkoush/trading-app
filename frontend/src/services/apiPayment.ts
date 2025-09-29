@@ -40,7 +40,7 @@ const apiPayment = {
     successUrl?: string,
     cancelUrl?: string
   ): Promise<CheckoutSessionResponse> => {
-    const response = await axiosInstance.post("/api/payment/create-checkout-session", {
+    const response = await axiosInstance.post("/api/payment/checkout", {
       priceData,
       successUrl,
       cancelUrl,

@@ -9,6 +9,9 @@ const getSubscriptions = asyncHandler(async (req, res) => {
     // get all subscriptions from db
     const subscriptions = await Subscription.find({});
     // indicate which are owned by current user.
+    if (currentUserId === null) {
+        res.json({ subscriptions });
+    }
     const subscriptionWithOwnership = await UserSubscription.find({ userId: currentUserId });
     const updateSubscriptions = subscriptions.map(sub => {
         let updateSub = sub;
@@ -27,7 +30,7 @@ const getSubscriptions = asyncHandler(async (req, res) => {
     })
 });
 
-const getCurrentUserSubscriptions = asyncHandler(async (req, res) => {  
+const getCurrentUserSubscriptions = asyncHandler(async (req, res) => {
 
 
 });
